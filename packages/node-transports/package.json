@@ -1,0 +1,40 @@
+{
+  "name": "@masonjames/emdash-smtp-node-transports",
+  "version": "0.1.0",
+  "description": "Trusted-only SMTP and sendmail transport adapters for EmDash SMTP",
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsdown src/index.ts --format esm --dts --clean",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "prepack": "pnpm build"
+  },
+  "keywords": ["emdash", "emdash-plugin", "smtp", "email", "nodemailer"],
+  "author": "Mason James",
+  "dependencies": {
+    "@masonjames/emdash-smtp-core": "workspace:*",
+    "nodemailer": "^6.10.1"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masonjames/emdash-smtp.git",
+    "directory": "packages/node-transports"
+  },
+  "homepage": "https://github.com/masonjames/emdash-smtp#readme",
+  "bugs": {
+    "url": "https://github.com/masonjames/emdash-smtp/issues"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@masonjames/emdash-smtp-core",
+  "version": "0.1.0",
+  "description": "Shared provider catalog, admin UI, and delivery engine for EmDash SMTP",
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsdown src/index.ts --format esm --dts --clean",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "prepack": "pnpm build"
+  },
+  "keywords": ["emdash", "emdash-plugin", "smtp", "email"],
+  "author": "Mason James",
+  "peerDependencies": {
+    "emdash": ">=0.1.0"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masonjames/emdash-smtp.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/masonjames/emdash-smtp#readme",
+  "bugs": {
+    "url": "https://github.com/masonjames/emdash-smtp/issues"
+  }
+}

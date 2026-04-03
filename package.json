@@ -1,0 +1,24 @@
+{
+  "name": "emdash-smtp-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Full-featured SMTP and transactional email plugin family for EmDash",
+  "packageManager": "pnpm@10.28.0",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "validate:marketplace": "node scripts/run-marketplace-cli.mjs plugin validate --dir packages/emdash-smtp-marketplace",
+    "bundle:marketplace": "node scripts/run-marketplace-cli.mjs plugin bundle --dir packages/emdash-smtp-marketplace",
+    "publish:marketplace": "node scripts/run-marketplace-cli.mjs plugin publish --dir packages/emdash-smtp-marketplace --build"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.13",
+    "@types/nodemailer": "^6.4.17",
+    "emdash": "^0.1.0",
+    "tsdown": "^0.20.3",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}

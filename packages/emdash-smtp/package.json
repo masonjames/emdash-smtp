@@ -1,0 +1,47 @@
+{
+  "name": "@masonjames/emdash-smtp",
+  "version": "0.1.0",
+  "description": "Trusted full-parity SMTP and transactional email plugin for EmDash",
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
+    },
+    "./plugin": {
+      "import": "./dist/plugin.mjs",
+      "types": "./dist/plugin.d.mts"
+    }
+  },
+  "files": ["dist", "README.md", "CHANGELOG.md"],
+  "scripts": {
+    "build": "tsdown src/index.ts src/plugin.ts --format esm --dts --clean",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "prepack": "pnpm build"
+  },
+  "keywords": ["emdash", "emdash-plugin", "smtp", "email", "transactional-email"],
+  "author": "Mason James",
+  "dependencies": {
+    "@masonjames/emdash-smtp-core": "workspace:*",
+    "@masonjames/emdash-smtp-node-transports": "workspace:*"
+  },
+  "peerDependencies": {
+    "emdash": ">=0.1.0"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masonjames/emdash-smtp.git",
+    "directory": "packages/emdash-smtp"
+  },
+  "homepage": "https://github.com/masonjames/emdash-smtp#readme",
+  "bugs": {
+    "url": "https://github.com/masonjames/emdash-smtp/issues"
+  }
+}
