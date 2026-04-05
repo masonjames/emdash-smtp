@@ -1,6 +1,6 @@
 {
   "name": "emdash-smtp",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Trusted full-parity SMTP and transactional email plugin for EmDash",
   "type": "module",
   "main": "dist/index.mjs",
