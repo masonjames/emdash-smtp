@@ -1,6 +1,6 @@
 {
-  "name": "@masonjames/emdash-smtp-marketplace",
-  "version": "0.1.0",
+  "name": "emdash-smtp-marketplace",
+  "version": "0.2.1",
   "description": "Marketplace-safe SMTP and transactional email plugin for EmDash",
   "type": "module",
   "main": "dist/index.mjs",
@@ -25,7 +25,7 @@
   "keywords": ["emdash", "emdash-plugin", "marketplace", "smtp", "email"],
   "author": "Mason James",
   "dependencies": {
-    "@masonjames/emdash-smtp-core": "workspace:*"
+    "emdash-smtp-core": "0.2.1"
   },
   "peerDependencies": {
     "emdash": ">=0.1.0"

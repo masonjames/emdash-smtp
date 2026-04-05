@@ -6,6 +6,7 @@ import {
 	createDeliveryLogRecord,
 	deliverWithConfiguredProvider,
 	handleAdminInteraction,
+	isDeliveryReady,
 	SMTP_ADMIN_PAGES,
 	SMTP_ADMIN_WIDGETS,
 	SMTP_PLUGIN_ID,
@@ -14,8 +15,8 @@ import {
 	type DeliveryRuntime,
 	type SmtpPluginContextLike,
 	writeDeliveryLog,
-} from "@masonjames/emdash-smtp-core";
-import { sendmailSend, smtpSend } from "@masonjames/emdash-smtp-node-transports";
+} from "emdash-smtp-core";
+import { sendmailSend, smtpSend } from "emdash-smtp-node-transports";
 
 function createTrustedRuntime(ctx: PluginContext): DeliveryRuntime {
 	return {
@@ -119,6 +120,13 @@ export function createPlugin(): ResolvedPlugin {
 						throw err;
 					}
 				},
+			},
+			"email:status": {
+				handler: async (_event: unknown, ctx: PluginContext) =>
+					isDeliveryReady({
+						ctx: ctx as unknown as SmtpPluginContextLike,
+						runtime: createTrustedRuntime(ctx),
+					}),
 			},
 		},
 		routes: {

@@ -1,4 +1,4 @@
-# `@masonjames/emdash-smtp-marketplace`
+# `emdash-smtp-marketplace`
 
 Marketplace-safe EmDash SMTP plugin package.
 
@@ -14,13 +14,13 @@ This package is designed for `emdash plugin bundle` / `emdash plugin publish` an
 ## Direct config install
 
 ```bash
-pnpm add @masonjames/emdash-smtp-marketplace
+pnpm add emdash-smtp-marketplace
 ```
 
 ```ts
 import { defineConfig } from "astro/config";
-import { emdash } from "emdash/astro";
-import { emdashSmtpMarketplace } from "@masonjames/emdash-smtp-marketplace";
+import emdash from "emdash/astro";
+import { emdashSmtpMarketplace } from "emdash-smtp-marketplace";
 
 export default defineConfig({
   integrations: [
@@ -34,11 +34,15 @@ export default defineConfig({
 
 ## Marketplace publishing
 
+Run these commands from the repo root:
+
 ```bash
-pnpm build
+pnpm validate:marketplace
 pnpm bundle:marketplace
 pnpm publish:marketplace
 ```
+
+That flow ultimately uses `emdash plugin publish --build` for `packages/emdash-smtp-marketplace`.
 
 ## Limits of the sandbox variant
 
@@ -47,7 +51,7 @@ The marketplace-safe package intentionally excludes trusted-only transports:
 - Generic SMTP
 - local sendmail / PHP mail analogue
 
-Use `@masonjames/emdash-smtp` instead when those transports are required.
+Use `emdash-smtp` instead when those transports are required.
 
 ## Plugin ID
 

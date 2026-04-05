@@ -44,7 +44,7 @@ import type {
 } from "./types.js";
 
 export const SMTP_PLUGIN_ID = "emdash-smtp";
-export const SMTP_PLUGIN_VERSION = "0.1.0";
+export const SMTP_PLUGIN_VERSION = "0.2.1";
 
 export const SMTP_ADMIN_PAGES = [
 	{ path: "/providers", label: "SMTP Providers", icon: "mail" },
@@ -419,7 +419,7 @@ async function buildProvidersPage(
 		blocks.push(
 			banner(
 				`${currentProvider.label} is not available in the marketplace variant`,
-				"Use the trusted @masonjames/emdash-smtp package in astro.config.mjs if you need this transport.",
+				"Use the trusted emdash-smtp package in astro.config.mjs if you need this transport.",
 				"alert",
 			),
 		);
