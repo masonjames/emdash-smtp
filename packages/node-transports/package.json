@@ -1,7 +1,7 @@
 {
   "name": "emdash-smtp-node-transports",
-  "version": "0.3.0",
-  "description": "Trusted-only SMTP and sendmail transport adapters for EmDash SMTP",
+  "version": "0.2.1",
+  "description": "Internal Node.js transport adapters for emdash-smtp. End users should install emdash-smtp.",
   "type": "module",
   "main": "dist/index.mjs",
   "types": "dist/index.d.mts",
@@ -21,7 +21,7 @@
   "keywords": ["emdash", "emdash-plugin", "smtp", "email", "nodemailer"],
   "author": "Mason James",
   "dependencies": {
-    "emdash-smtp-core": "workspace:*",
+    "emdash-smtp-core": "0.2.1",
     "nodemailer": "^6.10.1"
   },
   "license": "MIT",

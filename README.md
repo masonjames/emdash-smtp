@@ -2,15 +2,67 @@
 
 `emdash-smtp` is a production-oriented email delivery plugin family for EmDash split into two install targets:
 
-- `emdash-smtp` — trusted/native install for full provider parity, including generic SMTP and local sendmail
-- `emdash-smtp-marketplace` — marketplace-safe standard plugin package for the same EmDash SMTP product
+- `emdash-smtp` — trusted/npm install for full provider parity, including generic SMTP and local sendmail
+- `emdash-smtp-marketplace` — marketplace-safe companion package for the same EmDash SMTP product
 
-The split follows EmDash’s plugin model:
+Both distributions identify as the same EmDash plugin: `emdash-smtp`.
 
-- trusted plugins are installed from npm and registered in `astro.config.mjs`
-- sandboxed installs require a configured `sandboxRunner`
-- marketplace plugins are bundled with `emdash plugin bundle` and published with `emdash plugin publish`
-- both distributions identify as the same plugin in EmDash: `emdash-smtp`
+> Legacy package names under `@masonjames/*` are deprecated. Use the unscoped package names in this README.
+
+## Trusted install from npm
+
+Use the trusted package when you control the codebase and want the full provider set.
+
+```bash
+pnpm add emdash-smtp
+```
+
+```ts
+import { defineConfig } from "astro/config";
+import emdash from "emdash/astro";
+import { emdashSmtp } from "emdash-smtp";
+
+export default defineConfig({
+  integrations: [
+    emdash({
+      plugins: [emdashSmtp()],
+    }),
+  ],
+});
+```
+
+## Marketplace publication and sandboxed installs
+
+Use the marketplace companion when you need the EmDash marketplace flow or a sandbox-safe descriptor:
+
+```bash
+pnpm add emdash-smtp-marketplace
+```
+
+```ts
+import { defineConfig } from "astro/config";
+import emdash from "emdash/astro";
+import { emdashSmtpMarketplace } from "emdash-smtp-marketplace";
+
+export default defineConfig({
+  integrations: [
+    emdash({
+      sandboxRunner: "@emdash-cms/cloudflare/sandbox",
+      sandboxed: [emdashSmtpMarketplace()],
+    }),
+  ],
+});
+```
+
+The marketplace release stays on the official EmDash CLI path:
+
+```bash
+pnpm validate:marketplace
+pnpm bundle:marketplace
+pnpm publish:marketplace
+```
+
+That wrapper resolves the EmDash CLI and ultimately runs `emdash plugin publish --build` for `packages/emdash-smtp-marketplace`.
 
 ## Provider coverage
 
@@ -41,10 +93,18 @@ OAuth-backed providers (Google / Gmail, Microsoft 365 / Outlook, and Zoho Mail) 
 
 ## Repository layout
 
-- `packages/core` — shared provider catalog, settings storage, Block Kit admin builders, delivery engine
-- `packages/node-transports` — trusted-only SMTP/sendmail adapters
+Supported install targets:
+
 - `packages/emdash-smtp` — trusted EmDash plugin package
 - `packages/emdash-smtp-marketplace` — marketplace-safe EmDash plugin package
+
+Implementation packages published to satisfy dependency resolution:
+
+- `packages/core` — shared provider catalog, settings storage, Block Kit admin builders, delivery engine used by both public packages
+- `packages/node-transports` — trusted-only SMTP/sendmail adapters used by `emdash-smtp`
+
+Documentation and runbooks:
+
 - `docs/` — PRD, architecture notes, provider matrix, install/publish runbooks
 
 ## Local development
@@ -56,26 +116,37 @@ pnpm test
 pnpm build
 ```
 
-## Marketplace verification
+## Release workflow
 
-Validate or bundle the marketplace-safe package:
+Run the full verification pass:
 
 ```bash
-pnpm validate:marketplace
-pnpm bundle:marketplace
+pnpm release:check
 ```
 
-Publish after authenticating with EmDash:
+Dry-run npm publication in package order:
+
+```bash
+pnpm publish:npm -- --dry-run
+```
+
+Publish the npm packages:
+
+```bash
+pnpm publish:npm
+```
+
+Deprecate the legacy scoped package names:
+
+```bash
+pnpm deprecate:legacy
+```
+
+Publish the marketplace build:
 
 ```bash
 pnpm publish:marketplace
 ```
-
-The helper script at `scripts/run-emdash-cli.mjs` resolves the EmDash CLI in this order:
-
-1. `EMDASH_CLI_PATH`
-2. an installed EmDash package that exposes the CLI
-3. a sibling `../emdash` workspace checkout
 
 ## Documentation
 
@@ -90,7 +161,7 @@ The helper script at `scripts/run-emdash-cli.mjs` resolves the EmDash CLI in thi
 
 This repo is structured for:
 
-- scoped npm publication under `@masonjames`
-- trusted EmDash installation from npm
-- marketplace publication of the sandbox-safe companion
-- CI validation for build, typecheck, and tests
+- unscoped npm publication
+- trusted EmDash installation from npm via `astro.config.mjs`
+- marketplace publication of the sandbox-safe companion via `emdash plugin publish`
+- CI validation for build, typecheck, tests, marketplace validation, and marketplace bundling

@@ -6,6 +6,7 @@ import {
 	createDeliveryLogRecord,
 	deliverWithConfiguredProvider,
 	handleAdminInteraction,
+	isDeliveryReady,
 	SMTP_ADMIN_PAGES,
 	SMTP_ADMIN_WIDGETS,
 	SMTP_PLUGIN_ID,
@@ -120,17 +121,23 @@ export function createPlugin(): ResolvedPlugin {
 					}
 				},
 			},
+			"email:status": {
+				handler: async (_event: unknown, ctx: PluginContext) =>
+					isDeliveryReady({
+						ctx: ctx as unknown as SmtpPluginContextLike,
+						runtime: createTrustedRuntime(ctx),
+					}),
+			},
 		},
 		routes: {
 			admin: {
 				handler: (async (
-					routeCtx: { input: unknown; request: unknown },
-					ctx: PluginContext,
+					routeCtx: PluginContext & { input: unknown; request: unknown },
 				) => {
 					return handleAdminInteraction({
-						ctx: ctx as unknown as SmtpPluginContextLike,
+						ctx: routeCtx as unknown as SmtpPluginContextLike,
 						variant: "trusted",
-						runtime: createTrustedRuntime(ctx),
+						runtime: createTrustedRuntime(routeCtx),
 						interaction: (routeCtx.input ?? { type: "page_load", page: "/providers" }) as AdminInteraction,
 					});
 				}) as never,

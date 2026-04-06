@@ -6,6 +6,7 @@ import {
 	createDeliveryLogRecord,
 	deliverWithConfiguredProvider,
 	handleAdminInteraction,
+	isDeliveryReady,
 	writeDeliveryLog,
 } from "../src/index.js";
 import type { DeliveryLogRecord, SmtpPluginContextLike } from "../src/index.js";
@@ -28,7 +29,7 @@ function createMockCtx(seed: Record<string, unknown> = {}) {
 	const logs = new Map<string, DeliveryLogRecord>();
 
 	const ctx: SmtpPluginContextLike = {
-		plugin: { id: "emdash-smtp", version: "0.1.0" },
+		plugin: { id: "emdash-smtp", version: "0.2.1" },
 		kv: {
 			get: async <T>(key: string): Promise<T | null> => ((kvStore.get(key) as T | undefined) ?? null),
 			set: async (key: string, value: unknown) => {
@@ -106,6 +107,38 @@ describe("provider catalog", () => {
 });
 
 describe("delivery engine", () => {
+	it("reports delivery readiness only when a provider and default from address are configured", async () => {
+		const readyCtx = createMockCtx({
+			"settings:global": {
+				primaryProviderId: "resend",
+				fromEmail: "noreply@example.com",
+				fromName: "Example",
+				logLevel: "all",
+			},
+			"settings:provider:resend": { apiKey: "resend-key" },
+		});
+		const notReadyCtx = createMockCtx({
+			"settings:global": {
+				primaryProviderId: "resend",
+				logLevel: "all",
+			},
+			"settings:provider:resend": { apiKey: "resend-key" },
+		});
+
+		await expect(
+			isDeliveryReady({
+				ctx: readyCtx.ctx,
+				runtime: { variant: "marketplace", fetch: vi.fn() },
+			}),
+		).resolves.toBe(true);
+		await expect(
+			isDeliveryReady({
+				ctx: notReadyCtx.ctx,
+				runtime: { variant: "marketplace", fetch: vi.fn() },
+			}),
+		).resolves.toBe(false);
+	});
+
 	it("uses the fallback provider immediately when the selected primary is trusted-only in marketplace mode", async () => {
 		const { ctx } = createMockCtx({
 			"settings:global": {

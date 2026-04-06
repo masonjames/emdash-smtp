@@ -1,5 +1,7 @@
 # Installation Guide
 
+> Legacy package names under `@masonjames/*` are deprecated. Install the unscoped packages below.
+
 ## Trusted installation from npm
 
 Use this path when you control the codebase and want full provider parity.
@@ -10,7 +12,7 @@ pnpm add emdash-smtp
 
 ```ts
 import { defineConfig } from "astro/config";
-import { emdash } from "emdash/astro";
+import emdash from "emdash/astro";
 import { emdashSmtp } from "emdash-smtp";
 
 export default defineConfig({
@@ -32,7 +34,7 @@ pnpm add emdash-smtp-marketplace
 
 ```ts
 import { defineConfig } from "astro/config";
-import { emdash } from "emdash/astro";
+import emdash from "emdash/astro";
 import { emdashSmtpMarketplace } from "emdash-smtp-marketplace";
 
 export default defineConfig({
@@ -47,10 +49,10 @@ export default defineConfig({
 
 ## Installation from the EmDash Marketplace
 
-1. Configure marketplace access and sandbox support for your EmDash deployment
-2. Publish the marketplace package for the `emdash-smtp` plugin with `pnpm publish:marketplace`
-3. Install **EmDash SMTP** from **Plugins → Marketplace** in EmDash
-4. Open the plugin’s **Providers** page and configure the active provider
+1. Configure marketplace access and sandbox support for your EmDash deployment.
+2. From this repo, publish the marketplace package for the `emdash-smtp` plugin with `pnpm publish:marketplace`.
+3. Install **EmDash SMTP** from **Plugins → Marketplace** in EmDash.
+4. Open the plugin’s **Providers** page and configure the active provider.
 
 ## Recommended initial providers
 
@@ -60,7 +62,8 @@ export default defineConfig({
 
 ## Variant selection
 
-- Choose `emdash-smtp` if you need Generic SMTP or local sendmail
-- Choose `emdash-smtp-marketplace` if you need an EmDash marketplace install path
-- Both variants use the same EmDash plugin ID: `emdash-smtp`
-- Do not install both variants at the same time on the same site
+- Choose `emdash-smtp` if you need Generic SMTP or local sendmail.
+- Choose `emdash-smtp-marketplace` if you need an EmDash marketplace install path or sandbox-safe code install.
+- Do not install `emdash-smtp-core` or `emdash-smtp-node-transports` directly; they are implementation packages.
+- Both variants use the same EmDash plugin ID: `emdash-smtp`.
+- Do not install both variants at the same time on the same site.

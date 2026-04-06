@@ -19,7 +19,7 @@ pnpm add emdash-smtp-marketplace
 
 ```ts
 import { defineConfig } from "astro/config";
-import { emdash } from "emdash/astro";
+import emdash from "emdash/astro";
 import { emdashSmtpMarketplace } from "emdash-smtp-marketplace";
 
 export default defineConfig({
@@ -34,11 +34,15 @@ export default defineConfig({
 
 ## Marketplace publishing
 
+Run these commands from the repo root:
+
 ```bash
-pnpm build
+pnpm validate:marketplace
 pnpm bundle:marketplace
 pnpm publish:marketplace
 ```
+
+That flow ultimately uses `emdash plugin publish --build` for `packages/emdash-smtp-marketplace`.
 
 ## Limits of the sandbox variant
 

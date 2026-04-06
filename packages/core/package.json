@@ -1,7 +1,7 @@
 {
   "name": "emdash-smtp-core",
-  "version": "0.3.0",
-  "description": "Shared provider catalog, admin UI, and delivery engine for EmDash SMTP",
+  "version": "0.2.1",
+  "description": "Internal shared runtime for EmDash SMTP. End users should install emdash-smtp or emdash-smtp-marketplace.",
   "type": "module",
   "main": "dist/index.mjs",
   "types": "dist/index.d.mts",

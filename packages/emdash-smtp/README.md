@@ -23,7 +23,7 @@ pnpm add emdash-smtp
 
 ```ts
 import { defineConfig } from "astro/config";
-import { emdash } from "emdash/astro";
+import emdash from "emdash/astro";
 import { emdashSmtp } from "emdash-smtp";
 
 export default defineConfig({
@@ -49,7 +49,7 @@ Choose the trusted package if you need any of the following:
 Choose one runtime path per site:
 
 - `emdash-smtp` for trusted/npm installs
-- `emdash-smtp-marketplace` for marketplace/sandbox installs
+- `emdash-smtp-marketplace` for marketplace or sandbox installs
 - both distributions identify as `emdash-smtp` inside EmDash
 
 If you need a user-installable marketplace listing and a first-party npm install path, publish both packages as a split pair.

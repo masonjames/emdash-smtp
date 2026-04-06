@@ -1,13 +1,16 @@
 # Publishing Guide
 
-## Packages to publish
+## Supported package surfaces
 
-Public npm packages in this workspace:
+Supported user-facing install targets:
+
+- `emdash-smtp`
+- `emdash-smtp-marketplace`
+
+Implementation packages that are still published automatically to satisfy npm dependency resolution:
 
 - `emdash-smtp-core`
 - `emdash-smtp-node-transports`
-- `emdash-smtp`
-- `emdash-smtp-marketplace`
 
 Marketplace listing identity:
 
@@ -18,61 +21,72 @@ Marketplace listing identity:
 
 Before publishing:
 
-1. Bump versions consistently across all package manifests and `SMTP_PLUGIN_VERSION`
-2. Confirm npm publish access for the `@masonjames` scope
+1. Bump versions consistently across all package manifests and `SMTP_PLUGIN_VERSION`.
+2. Confirm npm publish access for the unscoped package names.
 3. Ensure the EmDash CLI is reachable through one of these paths:
    - `EMDASH_CLI_PATH`
    - an installed EmDash package that exposes its CLI
    - a sibling `../emdash` workspace checkout with `packages/core/dist/cli/index.mjs`
-4. Authenticate for marketplace publication with `emdash plugin login` or during `emdash plugin publish`
+4. Authenticate for marketplace publication with `emdash plugin login` or during `emdash plugin publish`.
 
 ## Verification
 
 Run the full local verification pass before publishing:
 
 ```bash
-pnpm install
-pnpm typecheck
-pnpm test
-pnpm build
-pnpm validate:marketplace
-pnpm bundle:marketplace
+pnpm release:check
 ```
+
+That runs:
+
+- `pnpm install --frozen-lockfile`
+- `pnpm typecheck`
+- `pnpm test`
+- `pnpm build`
+- `pnpm validate:marketplace`
+- `pnpm bundle:marketplace`
 
 ## npm publication
 
-Use `pnpm publish`, not raw `npm publish`, because this workspace uses `workspace:*` dependencies.
+Use the root publisher so packages go out in dependency order and can be resumed cleanly.
 
-Recommended order:
+Dry run:
+
+```bash
+pnpm publish:npm -- --dry-run
+```
+
+Publish:
+
+```bash
+pnpm publish:npm
+```
+
+Deprecate the legacy scoped package names after the unscoped publish is live:
+
+```bash
+pnpm deprecate:legacy
+```
+
+Published order:
 
 1. `packages/core`
 2. `packages/node-transports`
 3. `packages/emdash-smtp`
 4. `packages/emdash-smtp-marketplace`
 
-Example commands:
+If publication stops partway through, resume from the first unpublished package:
 
 ```bash
-(
-  cd packages/core
-  pnpm publish --access public
-)
-
-(
-  cd packages/node-transports
-  pnpm publish --access public
-)
-
-(
-  cd packages/emdash-smtp
-  pnpm publish --access public
-)
-
-(
-  cd packages/emdash-smtp-marketplace
-  pnpm publish --access public
-)
+pnpm publish:npm -- --from <first-unpublished-package>
 ```
+
+Valid package names are:
+
+- `emdash-smtp-core`
+- `emdash-smtp-node-transports`
+- `emdash-smtp`
+- `emdash-smtp-marketplace`
 
 ## EmDash marketplace publication
 
@@ -87,12 +101,17 @@ pnpm publish:marketplace
 Equivalent direct CLI flow:
 
 ```bash
-node scripts/run-emdash-cli.mjs plugin publish --dir packages/emdash-smtp-marketplace --build
+node scripts/run-marketplace-cli.mjs plugin publish --dir packages/emdash-smtp-marketplace --build
 ```
 
 ## Notes
 
+- Legacy package names under `@masonjames/*` should remain deprecated and point users at the supported unscoped install targets.
+
+- `publish:marketplace` uses `emdash plugin publish` under the hood after patching the marketplace package manifest to point at source entrypoints temporarily.
 - `emdash plugin publish` registers the plugin automatically the first time if the plugin ID does not exist yet.
 - Marketplace publication requires a strictly increasing semver version.
+- If interactive marketplace auth fails before a device code is shown, verify the registry discovery response includes `github.clientId` or provide `EMDASH_MARKETPLACE_TOKEN`.
+- The CI workflow now relies on the root `packageManager` field via Corepack so pnpm stays single-sourced.
 - This repository does not store npm credentials or marketplace auth tokens.
 - Use `docs/RELEASE.md` for the full GitHub + npm + marketplace runbook.

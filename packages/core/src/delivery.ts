@@ -155,3 +155,20 @@ export async function deliverWithConfiguredProvider(args: {
 		return sendWithProvider(args.ctx, fallback.provider, fallback.providerSettings, normalizedMessage, args.runtime);
 	}
 }
+
+export async function isDeliveryReady(args: {
+	ctx: SmtpPluginContextLike;
+	runtime: DeliveryRuntime;
+}): Promise<boolean> {
+	const settings = await getGlobalSettings(args.ctx);
+	if (!trimmed(settings.fromEmail)) {
+		return false;
+	}
+
+	try {
+		await resolvePrimaryProvider(args.ctx, args.runtime, settings);
+		return true;
+	} catch {
+		return false;
+	}
+}

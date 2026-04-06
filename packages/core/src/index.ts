@@ -28,6 +28,7 @@ export {
 	writeDeliveryLog,
 } from "./storage.js";
 export { deliverWithConfiguredProvider } from "./delivery.js";
+export { isDeliveryReady } from "./delivery.js";
 export {
 	handleAdminInteraction,
 	SMTP_ADMIN_PAGES,
