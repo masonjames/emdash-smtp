@@ -1,6 +1,6 @@
 {
   "name": "emdash-smtp-marketplace",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "description": "Marketplace-safe SMTP and transactional email plugin for EmDash",
   "type": "module",
   "main": "dist/index.mjs",
@@ -15,17 +15,29 @@
       "types": "./dist/sandbox-entry.d.mts"
     }
   },
-  "files": ["dist", "README.md", "CHANGELOG.md", "icon.png", "screenshots"],
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "icon.png",
+    "screenshots"
+  ],
   "scripts": {
     "build": "tsdown src/index.ts src/sandbox-entry.ts --format esm --dts --clean",
     "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "prepack": "pnpm build"
   },
-  "keywords": ["emdash", "emdash-plugin", "marketplace", "smtp", "email"],
+  "keywords": [
+    "emdash",
+    "emdash-plugin",
+    "marketplace",
+    "smtp",
+    "email"
+  ],
   "author": "Mason James",
   "dependencies": {
-    "emdash-smtp-core": "0.2.1"
+    "emdash-smtp-core": "0.3.1"
   },
   "peerDependencies": {
     "emdash": ">=0.1.0"

@@ -1,6 +1,6 @@
 {
   "name": "emdash-smtp-core",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "description": "Internal shared runtime for EmDash SMTP. End users should install emdash-smtp or emdash-smtp-marketplace.",
   "type": "module",
   "main": "dist/index.mjs",
@@ -11,14 +11,21 @@
       "types": "./dist/index.d.mts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsdown src/index.ts --format esm --dts --clean",
     "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "prepack": "pnpm build"
   },
-  "keywords": ["emdash", "emdash-plugin", "smtp", "email"],
+  "keywords": [
+    "emdash",
+    "emdash-plugin",
+    "smtp",
+    "email"
+  ],
   "author": "Mason James",
   "peerDependencies": {
     "emdash": ">=0.1.0"

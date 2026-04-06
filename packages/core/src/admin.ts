@@ -44,7 +44,7 @@ import type {
 } from "./types.js";
 
 export const SMTP_PLUGIN_ID = "emdash-smtp";
-export const SMTP_PLUGIN_VERSION = "0.2.1";
+export const SMTP_PLUGIN_VERSION = "0.3.1";
 
 export const SMTP_ADMIN_PAGES = [
 	{ path: "/providers", label: "SMTP Providers", icon: "mail" },

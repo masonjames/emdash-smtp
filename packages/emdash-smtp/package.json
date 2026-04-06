@@ -1,6 +1,6 @@
 {
   "name": "emdash-smtp",
-  "version": "0.2.2",
+  "version": "0.3.1",
   "description": "Trusted full-parity SMTP and transactional email plugin for EmDash",
   "type": "module",
   "main": "dist/index.mjs",
@@ -15,18 +15,28 @@
       "types": "./dist/plugin.d.mts"
     }
   },
-  "files": ["dist", "README.md", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "build": "tsdown src/index.ts src/plugin.ts --format esm --dts --clean",
     "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "prepack": "pnpm build"
   },
-  "keywords": ["emdash", "emdash-plugin", "smtp", "email", "transactional-email"],
+  "keywords": [
+    "emdash",
+    "emdash-plugin",
+    "smtp",
+    "email",
+    "transactional-email"
+  ],
   "author": "Mason James",
   "dependencies": {
-    "emdash-smtp-core": "0.2.1",
-    "emdash-smtp-node-transports": "0.2.1"
+    "emdash-smtp-core": "0.3.1",
+    "emdash-smtp-node-transports": "0.3.1"
   },
   "peerDependencies": {
     "emdash": ">=0.1.0"
