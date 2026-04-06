@@ -4,10 +4,10 @@
 
 Public npm packages in this workspace:
 
-- `@masonjames/emdash-smtp-core`
-- `@masonjames/emdash-smtp-node-transports`
-- `@masonjames/emdash-smtp`
-- `@masonjames/emdash-smtp-marketplace`
+- `emdash-smtp-core`
+- `emdash-smtp-node-transports`
+- `emdash-smtp`
+- `emdash-smtp-marketplace`
 
 Marketplace listing identity:
 

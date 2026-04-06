@@ -105,7 +105,7 @@ node scripts/run-emdash-cli.mjs plugin publish --dir packages/emdash-smtp-market
 
 Verify:
 
-- `pnpm add @masonjames/emdash-smtp` installs cleanly in a separate project
+- `pnpm add emdash-smtp` installs cleanly in a separate project
 - the marketplace listing appears as **EmDash SMTP**
 - the marketplace listing shows the icon, screenshots, README, and expected capabilities
 - a test email succeeds from the EmDash SMTP provider screen

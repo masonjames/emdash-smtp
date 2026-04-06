@@ -2,8 +2,8 @@
 
 `emdash-smtp` is a production-oriented email delivery plugin family for EmDash split into two install targets:
 
-- `@masonjames/emdash-smtp` — trusted/native install for full provider parity, including generic SMTP and local sendmail
-- `@masonjames/emdash-smtp-marketplace` — marketplace-safe standard plugin package for the same EmDash SMTP product
+- `emdash-smtp` — trusted/native install for full provider parity, including generic SMTP and local sendmail
+- `emdash-smtp-marketplace` — marketplace-safe standard plugin package for the same EmDash SMTP product
 
 The split follows EmDash’s plugin model:
 

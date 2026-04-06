@@ -4,7 +4,7 @@ import type {
 	DeliveryMessage,
 	LocalRuntimeTransportConfig,
 	SmtpRuntimeTransportConfig,
-} from "@masonjames/emdash-smtp-core";
+} from "emdash-smtp-core";
 
 function formatSender(message: DeliveryMessage): string {
 	if (!message.fromEmail) {

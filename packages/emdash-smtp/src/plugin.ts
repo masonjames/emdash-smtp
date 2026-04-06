@@ -14,8 +14,8 @@ import {
 	type DeliveryRuntime,
 	type SmtpPluginContextLike,
 	writeDeliveryLog,
-} from "@masonjames/emdash-smtp-core";
-import { sendmailSend, smtpSend } from "@masonjames/emdash-smtp-node-transports";
+} from "emdash-smtp-core";
+import { sendmailSend, smtpSend } from "emdash-smtp-node-transports";
 
 function createTrustedRuntime(ctx: PluginContext): DeliveryRuntime {
 	return {

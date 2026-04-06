@@ -35,28 +35,28 @@ importers:
 
   packages/emdash-smtp:
     dependencies:
-      '@masonjames/emdash-smtp-core':
-        specifier: workspace:*
-        version: link:../core
-      '@masonjames/emdash-smtp-node-transports':
-        specifier: workspace:*
-        version: link:../node-transports
       emdash:
         specifier: '>=0.1.0'
         version: 0.1.0(73799a8d717e6d4a26834cf9883c0516)
+      emdash-smtp-core:
+        specifier: workspace:*
+        version: link:../core
+      emdash-smtp-node-transports:
+        specifier: workspace:*
+        version: link:../node-transports
 
   packages/emdash-smtp-marketplace:
     dependencies:
-      '@masonjames/emdash-smtp-core':
-        specifier: workspace:*
-        version: link:../core
       emdash:
         specifier: '>=0.1.0'
         version: 0.1.0(73799a8d717e6d4a26834cf9883c0516)
+      emdash-smtp-core:
+        specifier: workspace:*
+        version: link:../core
 
   packages/node-transports:
     dependencies:
-      '@masonjames/emdash-smtp-core':
+      emdash-smtp-core:
         specifier: workspace:*
         version: link:../core
       nodemailer:

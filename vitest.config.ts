@@ -9,8 +9,8 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			emdash: resolve(__dirname, "../emdash/packages/core"),
-			"@masonjames/emdash-smtp-core": resolve(__dirname, "packages/core/src/index.ts"),
-			"@masonjames/emdash-smtp-node-transports": resolve(
+			"emdash-smtp-core": resolve(__dirname, "packages/core/src/index.ts"),
+			"emdash-smtp-node-transports": resolve(
 				__dirname,
 				"packages/node-transports/src/index.ts",
 			),

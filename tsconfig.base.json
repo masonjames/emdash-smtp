@@ -18,8 +18,8 @@
     "noImplicitOverride": true,
     "paths": {
       "emdash": ["../emdash/packages/core"],
-      "@masonjames/emdash-smtp-core": ["./packages/core/src/index.ts"],
-      "@masonjames/emdash-smtp-node-transports": ["./packages/node-transports/src/index.ts"]
+      "emdash-smtp-core": ["./packages/core/src/index.ts"],
+      "emdash-smtp-node-transports": ["./packages/node-transports/src/index.ts"]
     }
   }
 }

@@ -13,7 +13,7 @@ import {
 	type DeliveryRuntime,
 	type SmtpPluginContextLike,
 	writeDeliveryLog,
-} from "@masonjames/emdash-smtp-core";
+} from "emdash-smtp-core";
 
 function createMarketplaceRuntime(ctx: PluginContext): DeliveryRuntime {
 	return {

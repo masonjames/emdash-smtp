@@ -6,7 +6,7 @@ import {
 	SMTP_ADMIN_WIDGETS,
 	SMTP_PLUGIN_ID,
 	SMTP_PLUGIN_VERSION,
-} from "@masonjames/emdash-smtp-core";
+} from "emdash-smtp-core";
 
 export interface EmdashSmtpOptions {
 	label?: string;
@@ -16,7 +16,7 @@ export function emdashSmtp(options: EmdashSmtpOptions = {}): PluginDescriptor<Em
 	return {
 		id: SMTP_PLUGIN_ID,
 		version: SMTP_PLUGIN_VERSION,
-		entrypoint: "@masonjames/emdash-smtp/plugin",
+		entrypoint: "emdash-smtp/plugin",
 		options,
 		capabilities: ["email:provide", "network:fetch"],
 		allowedHosts: collectAllowedHosts("trusted"),

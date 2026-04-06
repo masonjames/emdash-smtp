@@ -1,6 +1,6 @@
 {
-  "name": "@masonjames/emdash-smtp-node-transports",
-  "version": "0.1.0",
+  "name": "emdash-smtp-node-transports",
+  "version": "0.3.0",
   "description": "Trusted-only SMTP and sendmail transport adapters for EmDash SMTP",
   "type": "module",
   "main": "dist/index.mjs",
@@ -21,7 +21,7 @@
   "keywords": ["emdash", "emdash-plugin", "smtp", "email", "nodemailer"],
   "author": "Mason James",
   "dependencies": {
-    "@masonjames/emdash-smtp-core": "workspace:*",
+    "emdash-smtp-core": "workspace:*",
     "nodemailer": "^6.10.1"
   },
   "license": "MIT",

@@ -22,14 +22,14 @@ EmDash SMTP is a production-ready email delivery plugin family for EmDash split 
 
 ### Trusted package
 
-- Package: `@masonjames/emdash-smtp`
+- Package: `emdash-smtp`
 - Plugin ID: `emdash-smtp`
 - Install path: npm + `astro.config.mjs`
 - Includes trusted-only transports such as Generic SMTP and local sendmail
 
 ### Marketplace package
 
-- Package: `@masonjames/emdash-smtp-marketplace`
+- Package: `emdash-smtp-marketplace`
 - Plugin ID: `emdash-smtp`
 - Install path: EmDash marketplace bundle / publish flow
 - Limited to providers that work in sandboxed execution

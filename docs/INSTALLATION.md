@@ -5,13 +5,13 @@
 Use this path when you control the codebase and want full provider parity.
 
 ```bash
-pnpm add @masonjames/emdash-smtp
+pnpm add emdash-smtp
 ```
 
 ```ts
 import { defineConfig } from "astro/config";
 import { emdash } from "emdash/astro";
-import { emdashSmtp } from "@masonjames/emdash-smtp";
+import { emdashSmtp } from "emdash-smtp";
 
 export default defineConfig({
   integrations: [
@@ -27,13 +27,13 @@ export default defineConfig({
 Use this path when you are developing against a sandbox-compatible environment and want the marketplace-safe descriptor from code.
 
 ```bash
-pnpm add @masonjames/emdash-smtp-marketplace
+pnpm add emdash-smtp-marketplace
 ```
 
 ```ts
 import { defineConfig } from "astro/config";
 import { emdash } from "emdash/astro";
-import { emdashSmtpMarketplace } from "@masonjames/emdash-smtp-marketplace";
+import { emdashSmtpMarketplace } from "emdash-smtp-marketplace";
 
 export default defineConfig({
   integrations: [
@@ -60,7 +60,7 @@ export default defineConfig({
 
 ## Variant selection
 
-- Choose `@masonjames/emdash-smtp` if you need Generic SMTP or local sendmail
-- Choose `@masonjames/emdash-smtp-marketplace` if you need an EmDash marketplace install path
+- Choose `emdash-smtp` if you need Generic SMTP or local sendmail
+- Choose `emdash-smtp-marketplace` if you need an EmDash marketplace install path
 - Both variants use the same EmDash plugin ID: `emdash-smtp`
 - Do not install both variants at the same time on the same site

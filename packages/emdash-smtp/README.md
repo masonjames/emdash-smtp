@@ -1,4 +1,4 @@
-# `@masonjames/emdash-smtp`
+# `emdash-smtp`
 
 Trusted installation of the EmDash SMTP plugin family.
 
@@ -16,7 +16,7 @@ Use this package when you need the full EmDash SMTP feature set, including trans
 ## Install
 
 ```bash
-pnpm add @masonjames/emdash-smtp
+pnpm add emdash-smtp
 ```
 
 ## Register in `astro.config.mjs`
@@ -24,7 +24,7 @@ pnpm add @masonjames/emdash-smtp
 ```ts
 import { defineConfig } from "astro/config";
 import { emdash } from "emdash/astro";
-import { emdashSmtp } from "@masonjames/emdash-smtp";
+import { emdashSmtp } from "emdash-smtp";
 
 export default defineConfig({
   integrations: [
@@ -48,8 +48,8 @@ Choose the trusted package if you need any of the following:
 
 Choose one runtime path per site:
 
-- `@masonjames/emdash-smtp` for trusted/npm installs
-- `@masonjames/emdash-smtp-marketplace` for marketplace/sandbox installs
+- `emdash-smtp` for trusted/npm installs
+- `emdash-smtp-marketplace` for marketplace/sandbox installs
 - both distributions identify as `emdash-smtp` inside EmDash
 
 If you need a user-installable marketplace listing and a first-party npm install path, publish both packages as a split pair.

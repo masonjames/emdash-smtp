@@ -6,7 +6,7 @@ import {
 	SMTP_ADMIN_WIDGETS,
 	SMTP_PLUGIN_ID,
 	SMTP_PLUGIN_VERSION,
-} from "@masonjames/emdash-smtp-core";
+} from "emdash-smtp-core";
 
 export const SMTP_MARKETPLACE_PLUGIN_ID = SMTP_PLUGIN_ID;
 
@@ -15,7 +15,7 @@ export function emdashSmtpMarketplace(): PluginDescriptor {
 		id: SMTP_MARKETPLACE_PLUGIN_ID,
 		version: SMTP_PLUGIN_VERSION,
 		format: "standard",
-		entrypoint: "@masonjames/emdash-smtp-marketplace/sandbox",
+		entrypoint: "emdash-smtp-marketplace/sandbox",
 		capabilities: ["email:provide", "network:fetch"],
 		allowedHosts: collectAllowedHosts("marketplace"),
 		storage: {

@@ -1,6 +1,6 @@
 {
-  "name": "@masonjames/emdash-smtp-core",
-  "version": "0.1.0",
+  "name": "emdash-smtp-core",
+  "version": "0.3.0",
   "description": "Shared provider catalog, admin UI, and delivery engine for EmDash SMTP",
   "type": "module",
   "main": "dist/index.mjs",
