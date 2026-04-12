@@ -5,7 +5,6 @@ import {
 	createDeliveryLogRecord,
 	deliverWithConfiguredProvider,
 	handleAdminInteraction,
-	isDeliveryReady,
 	SMTP_ADMIN_PAGES,
 	SMTP_ADMIN_WIDGETS,
 	SMTP_PLUGIN_ID,
@@ -79,13 +78,6 @@ export default definePlugin({
 					throw err;
 				}
 			},
-		},
-		"email:status": {
-			handler: async (_event: unknown, ctx: PluginContext) =>
-				isDeliveryReady({
-					ctx: ctx as unknown as SmtpPluginContextLike,
-					runtime: createMarketplaceRuntime(ctx),
-				}),
 		},
 	},
 	routes: {

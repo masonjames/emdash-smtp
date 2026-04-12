@@ -1,6 +1,6 @@
 {
   "name": "emdash-smtp-node-transports",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Internal Node.js transport adapters for emdash-smtp. End users should install emdash-smtp.",
   "type": "module",
   "main": "dist/index.mjs",
@@ -29,7 +29,7 @@
   ],
   "author": "Mason James",
   "dependencies": {
-    "emdash-smtp-core": "0.3.1",
+    "emdash-smtp-core": "0.3.2",
     "nodemailer": "^6.10.1"
   },
   "license": "MIT",

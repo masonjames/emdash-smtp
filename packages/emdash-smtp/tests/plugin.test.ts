@@ -16,7 +16,7 @@ describe("emdash-smtp plugin", () => {
 	it("registers email delivery and admin routes", () => {
 		const plugin = createPlugin();
 		expect(plugin.hooks).toHaveProperty("email:deliver");
-		expect(plugin.hooks).toHaveProperty("email:status");
+		expect(plugin.hooks).not.toHaveProperty("email:status");
 		expect(plugin.routes).toHaveProperty("admin");
 		expect(plugin.admin?.pages).toHaveLength(2);
 	});

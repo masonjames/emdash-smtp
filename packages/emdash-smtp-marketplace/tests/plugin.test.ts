@@ -27,6 +27,6 @@ describe("emdash-smtp-marketplace runtime", () => {
 	it("exposes an admin route and email delivery hook", () => {
 		expect(plugin.routes).toHaveProperty("admin");
 		expect(plugin.hooks).toHaveProperty("email:deliver");
-		expect(plugin.hooks).toHaveProperty("email:status");
+		expect(plugin.hooks).not.toHaveProperty("email:status");
 	});
 });
