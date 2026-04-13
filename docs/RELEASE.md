@@ -105,7 +105,7 @@ node scripts/run-marketplace-cli.mjs plugin publish --dir packages/emdash-smtp-m
 Verify:
 
 - `pnpm add emdash-smtp` installs cleanly in a separate project.
-- `pnpm add emdash-smtp-marketplace` installs cleanly in a separate sandboxed test project.
+- `pnpm add emdash-smtp-marketplace` installs cleanly in a separate project for package smoke testing; runtime sandbox usage should come through the marketplace bundle/install flow, not direct `sandboxed` config registration.
 - `@masonjames/emdash-smtp*` package pages warn and point to the new unscoped package names.
 - the trusted package registers in `astro.config.mjs` with `plugins: [emdashSmtp()]`.
 - the marketplace listing appears as **EmDash SMTP**.

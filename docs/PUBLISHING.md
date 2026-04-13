@@ -90,7 +90,7 @@ Valid package names are:
 
 ## EmDash marketplace publication
 
-Only the marketplace package goes through the EmDash marketplace flow.
+Only the marketplace package goes through the EmDash marketplace flow. Its package manifest points at TypeScript source entrypoints (`src/index.ts` and `src/sandbox-entry.ts`); the EmDash CLI bundles those into the marketplace artifact.
 
 ```bash
 pnpm validate:marketplace
@@ -108,7 +108,7 @@ node scripts/run-marketplace-cli.mjs plugin publish --dir packages/emdash-smtp-m
 
 - Legacy package names under `@masonjames/*` should remain deprecated and point users at the supported unscoped install targets.
 
-- `publish:marketplace` uses `emdash plugin publish` under the hood after patching the marketplace package manifest to point at source entrypoints temporarily.
+- `publish:marketplace` uses `emdash plugin publish` under the hood; the marketplace package manifest already points at source entrypoints.
 - `emdash plugin publish` registers the plugin automatically the first time if the plugin ID does not exist yet.
 - Marketplace publication requires a strictly increasing semver version.
 - If interactive marketplace auth fails before a device code is shown, verify the registry discovery response includes `github.clientId` or provide `EMDASH_MARKETPLACE_TOKEN`.

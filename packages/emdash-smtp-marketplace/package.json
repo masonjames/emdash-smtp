@@ -3,20 +3,20 @@
   "version": "0.3.2",
   "description": "Marketplace-safe SMTP and transactional email plugin for EmDash",
   "type": "module",
-  "main": "dist/index.mjs",
-  "types": "dist/index.d.mts",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.mts"
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
     },
     "./sandbox": {
-      "import": "./dist/sandbox-entry.mjs",
-      "types": "./dist/sandbox-entry.d.mts"
+      "types": "./src/sandbox-entry.ts",
+      "default": "./src/sandbox-entry.ts"
     }
   },
   "files": [
-    "dist",
+    "src",
     "README.md",
     "CHANGELOG.md",
     "icon.png",

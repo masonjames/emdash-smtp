@@ -11,30 +11,9 @@ This package is designed for `emdash plugin bundle` / `emdash plugin publish` an
 - Block Kit admin pages for provider settings and delivery logs
 - HTTP API and OAuth-capable provider coverage for the sandbox-safe EmDash SMTP package
 
-## Direct config install
+## Supported usage
 
-```bash
-pnpm add emdash-smtp-marketplace
-```
-
-```ts
-import { defineConfig } from "astro/config";
-import emdash from "emdash/astro";
-import { emdashSmtpMarketplace } from "emdash-smtp-marketplace";
-
-export default defineConfig({
-  integrations: [
-    emdash({
-      sandboxRunner: "@emdash-cms/cloudflare/sandbox",
-      sandboxed: [emdashSmtpMarketplace()],
-    }),
-  ],
-});
-```
-
-## Marketplace publishing
-
-Run these commands from the repo root:
+Use this package as the source package for EmDash marketplace bundling and publishing:
 
 ```bash
 pnpm validate:marketplace
@@ -42,7 +21,9 @@ pnpm bundle:marketplace
 pnpm publish:marketplace
 ```
 
-That flow ultimately uses `emdash plugin publish --build` for `packages/emdash-smtp-marketplace`.
+That flow ultimately uses `emdash plugin publish --build` for `packages/emdash-smtp-marketplace` and bundles the package's TypeScript entrypoints into the marketplace artifact.
+
+Direct `sandboxed: [emdashSmtpMarketplace()]` registration from this npm package is not the supported path right now; install through the EmDash marketplace or publish a bundled marketplace artifact with the CLI.
 
 ## Limits of the sandbox variant
 
