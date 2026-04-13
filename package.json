@@ -1,10 +1,13 @@
 {
   "name": "emdash-smtp-workspace",
   "private": true,
-  "version": "0.3.2",
+  "version": "0.3.3",
   "type": "module",
   "description": "Full-featured SMTP and transactional email plugin family for EmDash",
   "packageManager": "pnpm@10.28.0",
+  "plugin": {
+    "id": "emdash-smtp"
+  },
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r test",

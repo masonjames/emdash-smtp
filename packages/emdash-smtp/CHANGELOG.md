@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.3
+
+- Added package-level plugin identity metadata and explicit native descriptor metadata for marketplace trust review.
+- Refreshed interdependency pins to the matching 0.3.3 releases.
+
 ## 0.2.1
 
 - Strengthened README and package metadata messaging directing installers to `emdash-smtp` rather than the internal `emdash-smtp-core`/`emdash-smtp-node-transports` packages

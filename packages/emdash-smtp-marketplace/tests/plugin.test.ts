@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
 
 import { emdashSmtpMarketplace, SMTP_MARKETPLACE_PLUGIN_ID } from "../src/index.js";
@@ -20,6 +22,13 @@ describe("emdash-smtp-marketplace descriptor", () => {
 				"accounts.zoho.com",
 			]),
 		);
+	});
+
+	it("keeps package plugin.id metadata in sync", () => {
+		const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")) as {
+			plugin?: { id?: string };
+		};
+		expect(pkg.plugin?.id).toBe(SMTP_MARKETPLACE_PLUGIN_ID);
 	});
 });
 

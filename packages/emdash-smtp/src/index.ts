@@ -16,6 +16,7 @@ export function emdashSmtp(options: EmdashSmtpOptions = {}): PluginDescriptor<Em
 	return {
 		id: SMTP_PLUGIN_ID,
 		version: SMTP_PLUGIN_VERSION,
+		format: "native",
 		entrypoint: "emdash-smtp/plugin",
 		options,
 		capabilities: ["email:provide", "network:fetch"],
