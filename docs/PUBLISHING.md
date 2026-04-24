@@ -29,6 +29,8 @@ Before publishing:
    - a sibling `../emdash` workspace checkout with `packages/core/dist/cli/index.mjs`
 4. Authenticate for marketplace publication with `emdash plugin login` or during `emdash plugin publish`.
 
+The npm publisher reads npm credentials automatically. If normal npm auth is already configured through `NODE_AUTH_TOKEN`, `NPM_TOKEN`, or `NPM_CONFIG_USERCONFIG`, it uses that. Otherwise it reads the concealed `credential` field from the 1Password item named `NPM TOKEN`, writes it to a temporary npm config, verifies it with `npm whoami`, publishes, and removes the temporary config. Do not manually inline the token into shell commands.
+
 ## Verification
 
 Run the full local verification pass before publishing:
@@ -60,6 +62,12 @@ Publish:
 
 ```bash
 pnpm publish:npm
+```
+
+For dirty local worktrees, pass npm's git-check bypass through the root publisher:
+
+```bash
+pnpm publish:npm -- --no-git-checks
 ```
 
 Deprecate the legacy scoped package names after the unscoped publish is live:

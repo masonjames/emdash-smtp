@@ -136,6 +136,8 @@ Publish the npm packages:
 pnpm publish:npm
 ```
 
+The npm publisher uses existing npm auth when present, or reads the `NPM TOKEN` credential from 1Password into a temporary npm config.
+
 Deprecate the legacy scoped package names:
 
 ```bash

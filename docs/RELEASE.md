@@ -59,6 +59,14 @@ Publish the npm packages in dependency order:
 pnpm publish:npm
 ```
 
+`pnpm publish:npm` handles npm auth by default. It uses existing npm auth when present; otherwise it reads the concealed `credential` field from the 1Password item named `NPM TOKEN`, writes a temporary npm config, verifies `npm whoami`, publishes, and removes the temporary config.
+
+If publishing from a dirty local worktree, pass npm's git-check bypass through the root publisher:
+
+```bash
+pnpm publish:npm -- --no-git-checks
+```
+
 If a package fails after earlier packages were already published, resume from the first unpublished package:
 
 ```bash

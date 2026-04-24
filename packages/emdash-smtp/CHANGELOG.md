@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.4
+
+- Reworked the SMTP Providers admin page into a guided single-provider setup flow with compact quick picks and a full-provider dropdown for edge cases.
+- Bumped package interdependencies to 0.3.4.
+
 ## 0.3.3
 
 - Added package-level plugin identity metadata and explicit native descriptor metadata for marketplace trust review.
