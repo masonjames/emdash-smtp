@@ -1,6 +1,6 @@
 {
   "name": "emdash-smtp-marketplace",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Marketplace-safe SMTP and transactional email plugin for EmDash",
   "type": "module",
   "main": "dist/compat/index.mjs",
@@ -20,8 +20,7 @@
     "emdash-plugin.jsonc",
     "README.md",
     "CHANGELOG.md",
-    "icon.png",
-    "screenshots"
+    "icon.png"
   ],
   "scripts": {
     "build": "emdash-plugin build && tsdown src/index.ts --out-dir dist/compat --format esm --dts --clean",
