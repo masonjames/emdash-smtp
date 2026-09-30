@@ -64,13 +64,20 @@ export async function saveGlobalSettingsFromValues(
 	ctx: SmtpPluginContextLike,
 	values: Record<string, unknown>,
 ): Promise<GlobalSettings> {
+	const current = await getGlobalSettings(ctx);
 	const next: GlobalSettings = {
-		primaryProviderId: trimString(values.primaryProviderId),
-		fallbackProviderId: trimString(values.fallbackProviderId),
-		fromEmail: trimString(values.fromEmail),
-		fromName: trimString(values.fromName),
-		replyTo: trimString(values.replyTo),
-		logLevel: normalizeLogLevel(values.logLevel),
+		primaryProviderId:
+			values.primaryProviderId === undefined
+				? current.primaryProviderId
+				: trimString(values.primaryProviderId),
+		fallbackProviderId:
+			values.fallbackProviderId === undefined
+				? current.fallbackProviderId
+				: trimString(values.fallbackProviderId),
+		fromEmail: values.fromEmail === undefined ? current.fromEmail : trimString(values.fromEmail),
+		fromName: values.fromName === undefined ? current.fromName : trimString(values.fromName),
+		replyTo: values.replyTo === undefined ? current.replyTo : trimString(values.replyTo),
+		logLevel: values.logLevel === undefined ? current.logLevel : normalizeLogLevel(values.logLevel),
 	};
 	await ctx.kv.set(GLOBAL_SETTINGS_KEY, next);
 	return next;

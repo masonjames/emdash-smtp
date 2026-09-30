@@ -1,7 +1,7 @@
 {
   "name": "emdash-smtp-workspace",
   "private": true,
-  "version": "0.3.3",
+  "version": "0.4.0",
   "type": "module",
   "description": "Full-featured SMTP and transactional email plugin family for EmDash",
   "packageManager": "pnpm@10.28.0",
@@ -12,19 +12,23 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
-    "release:check": "pnpm install --frozen-lockfile && pnpm typecheck && pnpm test && pnpm build && pnpm validate:marketplace && pnpm bundle:marketplace",
+    "release:check": "pnpm install --frozen-lockfile && pnpm build && pnpm typecheck && pnpm test && pnpm test:sandbox && pnpm validate:marketplace && pnpm bundle:marketplace",
     "publish:npm": "node scripts/publish-npm-packages.mjs",
     "deprecate:legacy": "node scripts/deprecate-legacy-npm-packages.mjs",
-    "validate:marketplace": "node scripts/run-marketplace-cli.mjs plugin validate --dir packages/emdash-smtp-marketplace",
-    "bundle:marketplace": "node scripts/run-marketplace-cli.mjs plugin bundle --dir packages/emdash-smtp-marketplace",
-    "publish:marketplace": "node scripts/run-marketplace-cli.mjs plugin publish --dir packages/emdash-smtp-marketplace --build"
+    "validate:marketplace": "pnpm --dir packages/emdash-smtp-marketplace exec emdash-plugin validate",
+    "bundle:marketplace": "pnpm --dir packages/emdash-smtp-marketplace exec emdash-plugin bundle",
+    "publish:marketplace": "pnpm --dir packages/emdash-smtp-marketplace exec emdash-plugin publish",
+    "test:sandbox": "pnpm --dir packages/emdash-smtp-marketplace exec vitest run --config vitest.sandbox.config.ts"
   },
   "devDependencies": {
     "@types/node": "^24.10.13",
     "@types/nodemailer": "^6.4.17",
-    "emdash": "^0.1.0",
+    "emdash": "1.0.1",
     "tsdown": "^0.20.3",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "@emdash-cms/plugin-cli": "0.13.1",
+    "@emdash-cms/plugin-test": "0.2.6",
+    "vite": "^8.0.0"
   }
 }

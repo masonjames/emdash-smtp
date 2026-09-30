@@ -5,10 +5,10 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
 	test: {
 		environment: "node",
+		exclude: ["**/node_modules/**", "**/tests/sandbox.test.ts"],
 	},
 	resolve: {
 		alias: {
-			emdash: resolve(__dirname, "../emdash/packages/core"),
 			"emdash-smtp-core": resolve(__dirname, "packages/core/src/index.ts"),
 			"emdash-smtp-node-transports": resolve(
 				__dirname,

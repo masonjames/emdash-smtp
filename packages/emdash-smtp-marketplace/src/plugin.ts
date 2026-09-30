@@ -1,19 +1,17 @@
-import { definePlugin } from "emdash";
-import type { PluginContext } from "emdash";
+import type { PluginContext, SandboxedPlugin } from "emdash/plugin";
 
 import {
 	createDeliveryLogRecord,
 	deliverWithConfiguredProvider,
 	handleAdminInteraction,
-	SMTP_ADMIN_PAGES,
-	SMTP_ADMIN_WIDGETS,
-	SMTP_PLUGIN_ID,
-	SMTP_PLUGIN_VERSION,
-	type AdminInteraction,
 	type DeliveryRuntime,
 	type SmtpPluginContextLike,
 	writeDeliveryLog,
-} from "emdash-smtp-core";
+} from "../../core/src/index.js";
+
+function sharedContext(ctx: PluginContext): SmtpPluginContextLike {
+	return { ...ctx, storage: { deliveryLogs: ctx.storage.delivery_logs } } as unknown as SmtpPluginContextLike;
+}
 
 function createMarketplaceRuntime(ctx: PluginContext): DeliveryRuntime {
 	return {
@@ -32,7 +30,7 @@ interface MarketplaceEmailDeliverEvent {
 	source: string;
 }
 
-export default definePlugin({
+const plugin: SandboxedPlugin = {
 	hooks: {
 		"email:deliver": {
 			exclusive: true,
@@ -40,13 +38,13 @@ export default definePlugin({
 				const source = event.source || ctx.plugin.id;
 				try {
 					const result = await deliverWithConfiguredProvider({
-						ctx: ctx as unknown as SmtpPluginContextLike,
+						ctx: sharedContext(ctx),
 						runtime: createMarketplaceRuntime(ctx),
 						message: event.message,
 						source,
 					});
 					await writeDeliveryLog(
-						ctx as unknown as SmtpPluginContextLike,
+						sharedContext(ctx),
 						createDeliveryLogRecord({
 							providerId: result.providerId,
 							status: "sent",
@@ -62,7 +60,7 @@ export default definePlugin({
 				} catch (error) {
 					const err = error instanceof Error ? error : new Error(String(error));
 					await writeDeliveryLog(
-						ctx as unknown as SmtpPluginContextLike,
+						sharedContext(ctx),
 						createDeliveryLogRecord({
 							providerId: "unknown",
 							status: "failed",
@@ -82,17 +80,16 @@ export default definePlugin({
 	},
 	routes: {
 		admin: {
-			handler: (async (
-				routeCtx: { input: unknown; request: unknown },
-				ctx: PluginContext,
-			) => {
+			handler: async (routeCtx, ctx) => {
 				return handleAdminInteraction({
-					ctx: ctx as unknown as SmtpPluginContextLike,
+					ctx: sharedContext(ctx),
 					variant: "marketplace",
 					runtime: createMarketplaceRuntime(ctx),
-					interaction: (routeCtx.input ?? { type: "page_load", page: "/providers" }) as AdminInteraction,
+					interaction: routeCtx.input,
 				});
-			}) as never,
+			},
 		},
 	},
-});
+};
+
+export default plugin;

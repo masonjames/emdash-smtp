@@ -19,7 +19,7 @@ export function emdashSmtp(options: EmdashSmtpOptions = {}): PluginDescriptor<Em
 		format: "native",
 		entrypoint: "emdash-smtp/plugin",
 		options,
-		capabilities: ["email:provide", "network:fetch"],
+		capabilities: ["hooks.email-transport:register", "network:request"],
 		allowedHosts: collectAllowedHosts("trusted"),
 		storage: {
 			deliveryLogs: {

@@ -5,7 +5,7 @@
 - `emdash-smtp` — trusted/npm install for full provider parity, including generic SMTP and local sendmail
 - `emdash-smtp-marketplace` — marketplace-safe companion package for the same EmDash SMTP product
 
-Both distributions identify as the same EmDash plugin: `emdash-smtp`.
+Both distributions identify as `emdash-smtp` in npm configuration. Registry installations use a publisher-scoped identity. Requires EmDash 1.0.1 or later. Choose one distribution per site. Registry installs do not import npm settings or logs automatically.
 
 > Legacy package names under `@masonjames/*` are deprecated. Use the unscoped package names in this README.
 
@@ -33,7 +33,9 @@ export default defineConfig({
 
 ## Marketplace publication and sandboxed installs
 
-Use the marketplace companion when you need the EmDash marketplace flow or a sandbox-safe descriptor:
+Install **SMTP** by `@masonjames.com` from the [EmDash plugin registry](https://plugins.emdashcms.com). No frontend companion is required. Configure a provider and sender in Plugins → SMTP Providers, then select SMTP as the email transport in EmDash email settings.
+
+For code-managed sandbox registration, the existing npm factory remains available:
 
 ```bash
 pnpm add emdash-smtp-marketplace
@@ -62,7 +64,7 @@ pnpm bundle:marketplace
 pnpm publish:marketplace
 ```
 
-That wrapper resolves the EmDash CLI and ultimately runs `emdash plugin publish --build` for `packages/emdash-smtp-marketplace`.
+These commands use the pinned `@emdash-cms/plugin-cli` 0.13.1. Authenticate with `pnpm exec emdash-plugin login masonjames.com`. Direct publication uploads the bundle, icon and screenshots to the publisher’s PDS; public listing follows registry approval.
 
 ## Provider coverage
 
@@ -136,6 +138,8 @@ Publish the npm packages:
 pnpm publish:npm
 ```
 
+The npm publisher uses existing npm auth when present, or reads the `NPM TOKEN` credential from 1Password into a temporary npm config.
+
 Deprecate the legacy scoped package names:
 
 ```bash
@@ -163,5 +167,9 @@ This repo is structured for:
 
 - unscoped npm publication
 - trusted EmDash installation from npm via `astro.config.mjs`
-- marketplace publication of the sandbox-safe companion via `emdash plugin publish`
+- registry publication of the sandbox-safe companion via `emdash-plugin publish`
 - CI validation for build, typecheck, tests, marketplace validation, and marketplace bundling
+
+## Inspiration
+
+The official EmDash sandbox integration tests also appear in [Charl Kruger’s EmDash Forms](https://github.com/charl-kruger/emdash-forms). That project demonstrates the integration boundary we support: forms send notifications through `ctx.email.send()`, and SMTP supplies the email transport. SMTP’s sandbox tests capture provider requests locally rather than sending live email.

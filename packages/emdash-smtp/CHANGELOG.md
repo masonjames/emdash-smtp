@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.0
+
+- Require EmDash 1.0.1 and use current email transport and network permissions.
+- Publish the sandbox variant through the current EmDash plugin CLI and publisher manifest.
+- Preserve the native npm factory and SMTP/sendmail transports.
+- Validate admin interactions before changing settings; test private provider settings, HTTP delivery, logs, restart persistence and Block Kit screens in the official sandbox.
+
+## 0.3.4
+
+- Reworked the SMTP Providers admin page into a guided single-provider setup flow with compact quick picks and a full-provider dropdown for edge cases.
+- Bumped package interdependencies to 0.3.4.
+
 ## 0.3.3
 
 - Added package-level plugin identity metadata and explicit native descriptor metadata for marketplace trust review.

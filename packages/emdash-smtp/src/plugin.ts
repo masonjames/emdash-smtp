@@ -84,7 +84,7 @@ export function createPlugin(): ResolvedPlugin {
 	return definePlugin({
 		id: SMTP_PLUGIN_ID,
 		version: SMTP_PLUGIN_VERSION,
-		capabilities: ["email:provide", "network:fetch"],
+		capabilities: ["hooks.email-transport:register", "network:request"],
 		allowedHosts: collectAllowedHosts("trusted"),
 		storage: {
 			deliveryLogs: {

@@ -1,6 +1,4 @@
 import {
-	collectAllowedHosts,
-	getAvailableProviderSelectOptions,
 	getProviderById,
 	getProviderLabel,
 	getProviderPickerOptions,
@@ -44,7 +42,8 @@ import type {
 } from "./types.js";
 
 export const SMTP_PLUGIN_ID = "emdash-smtp";
-export const SMTP_PLUGIN_VERSION = "0.3.3";
+export const SMTP_PLUGIN_VERSION = "0.4.0";
+const RECOMMENDED_PROVIDER_IDS = ["resend", "postmark", "sendgrid", "mailgun", "generic"] as const;
 
 export const SMTP_ADMIN_PAGES = [
 	{ path: "/providers", label: "SMTP Providers", icon: "mail" },
@@ -192,18 +191,22 @@ async function buildSummary(ctx: SmtpPluginContextLike): Promise<CountSummary> {
 async function getCurrentProvider(
 	ctx: SmtpPluginContextLike,
 	variant: PluginVariant,
+	primaryProviderId?: string,
 ): Promise<ProviderDefinition> {
 	const selected = await getSelectedProviderId(ctx);
-	const preferred = selected ? getProviderById(selected) : undefined;
+	const preferred = selected ? getProviderById(selected) : primaryProviderId ? getProviderById(primaryProviderId) : undefined;
 	if (preferred) return preferred;
+	for (const providerId of RECOMMENDED_PROVIDER_IDS) {
+		const recommended = getProviderById(providerId);
+		if (recommended && isProviderAvailable(recommended, variant)) return recommended;
+	}
 	return (
 		SMTP_PROVIDER_DEFINITIONS.find((provider) => isProviderAvailable(provider, variant)) ??
 		SMTP_PROVIDER_DEFINITIONS[0]!
 	);
 }
 
-function buildGlobalSettingsForm(settings: GlobalSettings, variant: PluginVariant): FormBlock {
-	const availableOptions = getAvailableProviderSelectOptions(variant);
+function buildSenderSettingsForm(settings: GlobalSettings): FormBlock {
 	const logLevelOptions = [
 		{ label: "All deliveries", value: "all" },
 		{ label: "Errors only", value: "errors" },
@@ -213,27 +216,12 @@ function buildGlobalSettingsForm(settings: GlobalSettings, variant: PluginVarian
 		type: "form",
 		block_id: "global-settings",
 		fields: [
-			selectField(
-				{ key: "primaryProviderId", label: "Primary Provider", type: "select", options: availableOptions },
-				settings.primaryProviderId,
-				availableOptions,
-			),
-			selectField(
-				{
-					key: "fallbackProviderId",
-					label: "Fallback Provider",
-					type: "select",
-					options: [{ label: "None", value: "" }, ...availableOptions],
-				},
-				settings.fallbackProviderId,
-				[{ label: "None", value: "" }, ...availableOptions],
-			),
 			textField({ key: "fromEmail", label: "Default From Email", type: "text", required: true, placeholder: "noreply@example.com" }, settings.fromEmail),
 			textField({ key: "fromName", label: "Default From Name", type: "text", placeholder: "Example Site" }, settings.fromName),
 			textField({ key: "replyTo", label: "Default Reply-To Email", type: "text", placeholder: "support@example.com" }, settings.replyTo),
 			selectField({ key: "logLevel", label: "Log Level", type: "select", options: logLevelOptions }, settings.logLevel ?? "all", logLevelOptions),
 		],
-		submit: { label: "Save Global Settings", action_id: "save_global" },
+		submit: { label: "Save Sender Settings", action_id: "save_global" },
 	};
 }
 
@@ -241,24 +229,190 @@ function buildProviderPickerForm(providerId: string, variant: PluginVariant): Fo
 	const options = getProviderPickerOptions(variant);
 	return {
 		type: "form",
-		block_id: "provider-picker",
-		fields: [selectField({ key: "providerId", label: "Provider", type: "select", options }, providerId, options)],
-		submit: { label: "Load Provider", action_id: "select_provider" },
+		block_id: "provider-browser",
+		fields: [
+			selectField(
+				{ key: "providerId", label: "Browse every provider", type: "select", options },
+				providerId,
+				options,
+			),
+		],
+		submit: { label: "Switch Provider", action_id: "select_provider" },
 	};
 }
 
-function buildProviderDetails(provider: ProviderDefinition, variant: PluginVariant, configured: boolean): Block[] {
-	const available = isProviderAvailable(provider, variant);
+type ProviderRoutingRole = "primary" | "fallback" | "none";
+
+interface ProviderCatalogEntry {
+	provider: ProviderDefinition;
+	available: boolean;
+	configured: boolean;
+	selected: boolean;
+	routingRole: ProviderRoutingRole;
+}
+
+function getProviderRoutingRole(provider: ProviderDefinition, settings: GlobalSettings): ProviderRoutingRole {
+	if (settings.primaryProviderId === provider.id) return "primary";
+	if (settings.fallbackProviderId === provider.id) return "fallback";
+	return "none";
+}
+
+function routingRoleLabel(role: ProviderRoutingRole): string {
+	if (role === "primary") return "Primary";
+	if (role === "fallback") return "Fallback";
+	return "Not routed";
+}
+
+function setupNextStep(settings: GlobalSettings, configured: boolean, routingRole: ProviderRoutingRole): string {
+	if (!configured) return "Add credentials";
+	if (routingRole === "none") return "Set delivery route";
+	if (!settings.fromEmail) return "Add sender";
+	return "Ready to test";
+}
+
+function routeSummary(provider: ProviderDefinition, routingRole: ProviderRoutingRole): string {
+	if (routingRole === "primary") return `${provider.label} handles delivery`;
+	if (routingRole === "fallback") return `${provider.label} is the fallback`;
+	return "Not routed";
+}
+
+async function buildProviderCatalogEntries(
+	ctx: SmtpPluginContextLike,
+	variant: PluginVariant,
+	settings: GlobalSettings,
+	currentProvider: ProviderDefinition,
+): Promise<ProviderCatalogEntry[]> {
+	return Promise.all(
+		SMTP_PROVIDER_DEFINITIONS.map(async (provider) => {
+			const providerSettings = await getProviderSettings(ctx, provider.id);
+			return {
+				provider,
+				available: isProviderAvailable(provider, variant),
+				configured: isProviderConfigured(provider, providerSettings),
+				selected: provider.id === currentProvider.id,
+				routingRole: getProviderRoutingRole(provider, settings),
+			};
+		}),
+	);
+}
+
+function buildProviderQuickPicks(entries: ProviderCatalogEntry[]): Block[] {
+	const quickPicks = RECOMMENDED_PROVIDER_IDS
+		.map((providerId) => entries.find((entry) => entry.provider.id === providerId && entry.available))
+		.filter((entry): entry is ProviderCatalogEntry => Boolean(entry));
+
+	const blocks: Block[] = [
+		{
+			type: "section",
+			text: "Provider",
+		},
+	];
+
+	if (quickPicks.length > 0) {
+		blocks.push(
+			actions(
+				quickPicks.map((entry) =>
+					button(`select_provider:${entry.provider.id}`, entry.provider.label, {
+						style: entry.selected ? "primary" : "secondary",
+						value: entry.provider.id,
+					}),
+				),
+			),
+		);
+	}
+
+	return blocks;
+}
+
+function buildRoutingActions(settings: GlobalSettings, currentProvider: ProviderDefinition): Block[] {
+	const elements: BlockElement[] = [];
+
+	if (settings.primaryProviderId !== currentProvider.id) {
+		elements.push(
+			button("set_primary_provider", `Use ${currentProvider.label} for delivery`, {
+				style: "primary",
+				value: currentProvider.id,
+			}),
+		);
+	} else {
+		elements.push(
+			button("set_primary_provider", "Primary provider", {
+				style: "secondary",
+				value: currentProvider.id,
+			}),
+		);
+	}
+
+	if (settings.fallbackProviderId === currentProvider.id) {
+		elements.push(button("clear_fallback_provider", "Remove fallback", { style: "secondary" }));
+	} else if (settings.primaryProviderId && settings.primaryProviderId !== currentProvider.id) {
+		elements.push(
+			button("set_fallback_provider", "Use as fallback", {
+				style: "secondary",
+				value: currentProvider.id,
+			}),
+		);
+	} else if (settings.fallbackProviderId) {
+		elements.push(button("clear_fallback_provider", "Clear fallback", { style: "secondary" }));
+	}
+
+	return elements.length ? [actions(elements)] : [];
+}
+
+function buildSetupOverview(
+	settings: GlobalSettings,
+	currentProvider: ProviderDefinition,
+	configured: boolean,
+	routingRole: ProviderRoutingRole,
+): Block[] {
 	return [
 		{
-			type: "fields",
-			fields: [
-				{ label: "Provider", value: provider.label },
-				{ label: "Availability", value: available ? "Available" : "Trusted-only" },
-				{ label: "Configured", value: configured ? "Yes" : "No" },
-				{ label: "Allowed Hosts", value: provider.allowedHosts.length ? provider.allowedHosts.join(", ") : "None" },
+			type: "section",
+			text: "Current setup",
+		},
+		{
+			type: "table",
+			page_action_id: "go_providers",
+			columns: [
+				{ key: "area", label: "Area" },
+				{ key: "status", label: "Status" },
+				{ key: "next", label: "Next" },
+			],
+			rows: [
+				{
+					area: currentProvider.label,
+					status: configured ? "Ready" : "Needs setup",
+					next: setupNextStep(settings, configured, routingRole),
+				},
+				{
+					area: "Delivery route",
+					status: routeSummary(currentProvider, routingRole),
+					next: routingRole === "none" ? `Use ${currentProvider.label}` : "Set",
+				},
+				{
+					area: "Sender",
+					status: settings.fromEmail ?? "Not set",
+					next: settings.fromEmail ? "Saved" : "Add default",
+				},
 			],
 		},
+	];
+}
+
+function buildProviderDetails(
+	provider: ProviderDefinition,
+	variant: PluginVariant,
+	configured: boolean,
+	routingRole: ProviderRoutingRole,
+): Block[] {
+	const available = isProviderAvailable(provider, variant);
+	const statusParts = [
+		available ? "Available" : "Trusted only",
+		configured ? "settings ready" : "needs credentials",
+		routeSummary(provider, routingRole),
+	];
+	return [
+		context(statusParts.join(" · ")),
 		context(provider.description),
 	];
 }
@@ -363,57 +517,33 @@ async function buildProvidersPage(
 ): Promise<BlockResponse> {
 	const summary = await buildSummary(ctx);
 	const settings = await getGlobalSettings(ctx);
-	const currentProvider = await getCurrentProvider(ctx, variant);
+	const currentProvider = await getCurrentProvider(ctx, variant, settings.primaryProviderId);
 	const currentProviderSettings = await getProviderSettings(ctx, currentProvider.id);
 	const configured = isProviderConfigured(currentProvider, currentProviderSettings);
+	const currentRoutingRole = getProviderRoutingRole(currentProvider, settings);
+	const catalogEntries = await buildProviderCatalogEntries(ctx, variant, settings, currentProvider);
 	const lastTestResult = await getLastTestResult(ctx);
 	const secretActions = buildProviderSecretActions(currentProvider, currentProviderSettings);
 
-	const providerRows = await Promise.all(
-		SMTP_PROVIDER_DEFINITIONS.map(async (provider) => {
-			const providerSettings = await getProviderSettings(ctx, provider.id);
-			return {
-				provider: provider.label,
-				id: provider.id,
-				availability: isProviderAvailable(provider, variant) ? "available" : "trusted-only",
-				configured: isProviderConfigured(provider, providerSettings) ? "yes" : "no",
-				selected: provider.id === currentProvider.id ? "current" : "",
-			};
-		}),
-	);
-
-	const blocks: Block[] = [
-		header("SMTP Providers"),
-		banner(
-			variant === "marketplace" ? "Marketplace-safe variant" : "Trusted variant",
-			variant === "marketplace"
-				? "This install can use HTTP API providers. Generic SMTP and local sendmail remain visible for parity but are not available here."
-				: `This install can use all providers, including Generic SMTP and local sendmail. Allowed hosts: ${collectAllowedHosts("trusted").join(", ")}`,
-			variant === "marketplace" ? "alert" : "default",
-		),
+	const blocks: Block[] = [header("SMTP Providers")];
+	if (variant === "marketplace") {
+		blocks.push(banner("Marketplace install", "HTTP API providers are available.", "alert"));
+	}
+	blocks.push(
 		stats(summary),
 		actions([
 			button("go_providers", "Providers", { style: "secondary" }),
 			button("go_logs", "View Logs", { style: "primary" }),
 		]),
-		{
-			type: "table",
-			page_action_id: "go_providers",
-			empty_text: "No providers available.",
-			columns: [
-				{ key: "provider", label: "Provider" },
-				{ key: "id", label: "ID", format: "code" },
-				{ key: "availability", label: "Availability", format: "badge" },
-				{ key: "configured", label: "Configured", format: "badge" },
-				{ key: "selected", label: "Selected", format: "badge" },
-			],
-			rows: providerRows,
-		},
+		...buildSetupOverview(settings, currentProvider, configured, currentRoutingRole),
+		...buildProviderQuickPicks(catalogEntries),
 		divider(),
-		buildProviderPickerForm(currentProvider.id, variant),
-		...buildProviderDetails(currentProvider, variant, configured),
-		buildGlobalSettingsForm(settings, variant),
-	];
+		{
+			type: "section",
+			text: `${currentProvider.label} setup`,
+		},
+		...buildProviderDetails(currentProvider, variant, configured, currentRoutingRole),
+	);
 
 	if (!isProviderAvailable(currentProvider, variant)) {
 		blocks.push(
@@ -426,8 +556,18 @@ async function buildProvidersPage(
 	} else {
 		blocks.push(buildProviderSettingsForm(currentProvider, currentProviderSettings));
 		if (secretActions) blocks.push(secretActions);
-		blocks.push(...buildTestSendForm(lastTestResult));
 	}
+
+	blocks.push(divider());
+	blocks.push({ type: "section", text: "Sender identity" });
+	blocks.push(...buildRoutingActions(settings, currentProvider));
+	blocks.push(buildSenderSettingsForm(settings));
+	blocks.push(divider());
+	blocks.push({ type: "section", text: "Need a different provider?" });
+	blocks.push(buildProviderPickerForm(currentProvider.id, variant));
+	blocks.push(divider());
+	blocks.push({ type: "section", text: "Test delivery" });
+	blocks.push(...buildTestSendForm(lastTestResult));
 
 	return { blocks, ...(toast ? { toast } : {}) };
 }
@@ -461,13 +601,28 @@ async function buildWidgetPage(ctx: SmtpPluginContextLike): Promise<BlockRespons
 	};
 }
 
+function parseAdminInteraction(input: unknown): AdminInteraction {
+	if (input && typeof input === "object" && !Array.isArray(input)) {
+		const value = input as Record<string, unknown>;
+		if (value.type === "page_load" && typeof value.page === "string") return value as unknown as AdminInteraction;
+		if (typeof value.action_id === "string" && (value.block_id === undefined || typeof value.block_id === "string")) {
+			if (value.type === "form_submit" && value.values && typeof value.values === "object" && !Array.isArray(value.values)) return value as unknown as AdminInteraction;
+			if (value.type === "action" || value.type === "block_action") return value as unknown as AdminInteraction;
+		}
+	}
+	throw new Error("Invalid SMTP admin interaction.");
+}
+
 export async function handleAdminInteraction(args: {
 	ctx: SmtpPluginContextLike;
 	variant: PluginVariant;
 	runtime: DeliveryRuntime;
-	interaction: AdminInteraction;
+	interaction: unknown;
 }): Promise<BlockResponse> {
-	const { ctx, interaction, variant, runtime } = args;
+	const { ctx, variant, runtime } = args;
+	let interaction: AdminInteraction;
+	try { interaction = parseAdminInteraction(args.interaction); }
+	catch { return { blocks: [banner("Invalid request", "The SMTP admin interaction is invalid.", "error")], toast: { message: "Invalid SMTP admin interaction.", type: "error" } }; }
 
 	if (interaction.type === "page_load") {
 		if (interaction.page === "/logs") return buildLogsPage(ctx);
@@ -478,6 +633,66 @@ export async function handleAdminInteraction(args: {
 	if (interaction.type === "block_action" || interaction.type === "action") {
 		if (interaction.action_id === "go_logs") return buildLogsPage(ctx);
 		if (interaction.action_id === "go_providers") return buildProvidersPage(ctx, variant, runtime);
+		if (interaction.action_id === "select_provider" || interaction.action_id.startsWith("select_provider:")) {
+			const providerId =
+				stringValue(interaction.value) ??
+				(interaction.action_id.startsWith("select_provider:")
+					? stringValue(interaction.action_id.split(":")[1])
+					: undefined);
+			if (providerId && getProviderById(providerId)) {
+				await setSelectedProviderId(ctx, providerId);
+				return buildProvidersPage(ctx, variant, runtime, {
+					message: `Editing ${getProviderLabel(providerId)}.`,
+					type: "info",
+				});
+			}
+			return buildProvidersPage(ctx, variant, runtime, {
+				message: "Provider could not be selected.",
+				type: "error",
+			});
+		}
+		if (interaction.action_id === "set_primary_provider") {
+			const providerId = stringValue(interaction.value);
+			const provider = providerId ? getProviderById(providerId) : undefined;
+			if (provider && isProviderAvailable(provider, variant)) {
+				const settings = await getGlobalSettings(ctx);
+				await saveGlobalSettingsFromValues(ctx, {
+					primaryProviderId: provider.id,
+					...(settings.fallbackProviderId === provider.id ? { fallbackProviderId: "" } : {}),
+				});
+				return buildProvidersPage(ctx, variant, runtime, {
+					message: `${provider.label} is now the delivery provider.`,
+					type: "success",
+				});
+			}
+			return buildProvidersPage(ctx, variant, runtime, {
+				message: "Provider could not be routed.",
+				type: "error",
+			});
+		}
+		if (interaction.action_id === "set_fallback_provider") {
+			const providerId = stringValue(interaction.value);
+			const provider = providerId ? getProviderById(providerId) : undefined;
+			const settings = await getGlobalSettings(ctx);
+			if (provider && isProviderAvailable(provider, variant) && settings.primaryProviderId !== provider.id) {
+				await saveGlobalSettingsFromValues(ctx, { fallbackProviderId: provider.id });
+				return buildProvidersPage(ctx, variant, runtime, {
+					message: `${provider.label} is now the fallback provider.`,
+					type: "success",
+				});
+			}
+			return buildProvidersPage(ctx, variant, runtime, {
+				message: "Fallback provider could not be routed.",
+				type: "error",
+			});
+		}
+		if (interaction.action_id === "clear_fallback_provider") {
+			await saveGlobalSettingsFromValues(ctx, { fallbackProviderId: "" });
+			return buildProvidersPage(ctx, variant, runtime, {
+				message: "Fallback provider cleared.",
+				type: "success",
+			});
+		}
 		if (interaction.action_id.startsWith("clear_secret:")) {
 			const [, providerId, fieldKey] = interaction.action_id.split(":");
 			if (providerId && fieldKey) {
@@ -495,7 +710,7 @@ export async function handleAdminInteraction(args: {
 		if (interaction.action_id === "save_global") {
 			await saveGlobalSettingsFromValues(ctx, interaction.values);
 			return buildProvidersPage(ctx, variant, runtime, {
-				message: "Global SMTP settings saved.",
+				message: "Sender settings saved.",
 				type: "success",
 			});
 		}
@@ -512,7 +727,7 @@ export async function handleAdminInteraction(args: {
 		}
 
 		if (interaction.action_id === "save_provider") {
-			const provider = await getCurrentProvider(ctx, variant);
+			const provider = await getCurrentProvider(ctx, variant, (await getGlobalSettings(ctx)).primaryProviderId);
 			await saveProviderSettingsFromValues(ctx, provider, interaction.values);
 			return buildProvidersPage(ctx, variant, runtime, {
 				message: `${provider.label} settings saved.`,
