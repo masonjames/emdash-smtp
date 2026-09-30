@@ -146,7 +146,7 @@ try {
 		console.error(`pnpm publish:npm -- --from ${failedPackage.name}`);
 		process.exitCode = failedExitCode;
 	} else {
-		console.log("\nAll npm packages published successfully.");
+		console.log(hasDryRunFlag(forward) ? "\nAll npm publication dry runs completed successfully." : "\nAll npm packages published successfully.");
 	}
 } finally {
 	npmAuth.cleanup();
