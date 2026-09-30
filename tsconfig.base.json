@@ -3,7 +3,11 @@
     "baseUrl": ".",
     "target": "ES2022",
     "module": "preserve",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowJs": false,
@@ -17,9 +21,12 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "paths": {
-      "emdash": ["../emdash/packages/core"],
-      "emdash-smtp-core": ["./packages/core/src/index.ts"],
-      "emdash-smtp-node-transports": ["./packages/node-transports/src/index.ts"]
+      "emdash-smtp-core": [
+        "./packages/core/src/index.ts"
+      ],
+      "emdash-smtp-node-transports": [
+        "./packages/node-transports/src/index.ts"
+      ]
     }
   }
 }

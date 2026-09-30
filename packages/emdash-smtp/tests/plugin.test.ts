@@ -11,7 +11,7 @@ describe("emdash-smtp descriptor", () => {
 		expect(descriptor.id).toBe("emdash-smtp");
 		expect(descriptor.format).toBe("native");
 		expect(descriptor.entrypoint).toBe("emdash-smtp/plugin");
-		expect(descriptor.capabilities).toEqual(["email:provide", "network:fetch"]);
+		expect(new Set(descriptor.capabilities)).toEqual(new Set(["hooks.email-transport:register", "network:request"]));
 		expect(descriptor.allowedHosts?.length).toBeGreaterThan(0);
 		expect(descriptor.adminPages).toHaveLength(2);
 	});

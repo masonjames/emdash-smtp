@@ -42,7 +42,7 @@ import type {
 } from "./types.js";
 
 export const SMTP_PLUGIN_ID = "emdash-smtp";
-export const SMTP_PLUGIN_VERSION = "0.3.4";
+export const SMTP_PLUGIN_VERSION = "0.4.0";
 const RECOMMENDED_PROVIDER_IDS = ["resend", "postmark", "sendgrid", "mailgun", "generic"] as const;
 
 export const SMTP_ADMIN_PAGES = [
@@ -601,13 +601,28 @@ async function buildWidgetPage(ctx: SmtpPluginContextLike): Promise<BlockRespons
 	};
 }
 
+function parseAdminInteraction(input: unknown): AdminInteraction {
+	if (input && typeof input === "object" && !Array.isArray(input)) {
+		const value = input as Record<string, unknown>;
+		if (value.type === "page_load" && typeof value.page === "string") return value as unknown as AdminInteraction;
+		if (typeof value.action_id === "string" && (value.block_id === undefined || typeof value.block_id === "string")) {
+			if (value.type === "form_submit" && value.values && typeof value.values === "object" && !Array.isArray(value.values)) return value as unknown as AdminInteraction;
+			if (value.type === "action" || value.type === "block_action") return value as unknown as AdminInteraction;
+		}
+	}
+	throw new Error("Invalid SMTP admin interaction.");
+}
+
 export async function handleAdminInteraction(args: {
 	ctx: SmtpPluginContextLike;
 	variant: PluginVariant;
 	runtime: DeliveryRuntime;
-	interaction: AdminInteraction;
+	interaction: unknown;
 }): Promise<BlockResponse> {
-	const { ctx, interaction, variant, runtime } = args;
+	const { ctx, variant, runtime } = args;
+	let interaction: AdminInteraction;
+	try { interaction = parseAdminInteraction(args.interaction); }
+	catch { return { blocks: [banner("Invalid request", "The SMTP admin interaction is invalid.", "error")], toast: { message: "Invalid SMTP admin interaction.", type: "error" } }; }
 
 	if (interaction.type === "page_load") {
 		if (interaction.page === "/logs") return buildLogsPage(ctx);

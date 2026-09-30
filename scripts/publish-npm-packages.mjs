@@ -78,7 +78,7 @@ function configureNpmAuth(args) {
 	env.NPM_CONFIG_USERCONFIG = userconfig;
 
 	try {
-		const whoami = execFileSync("npm", ["whoami"], {
+		const whoami = execFileSync(pnpmCommand, ["whoami"], {
 			encoding: "utf8",
 			env,
 			stdio: ["ignore", "pipe", "pipe"],

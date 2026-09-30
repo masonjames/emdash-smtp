@@ -17,7 +17,6 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 22
-          cache: pnpm
 
       - name: Enable Corepack
         run: corepack enable
@@ -25,14 +24,17 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Build
+        run: pnpm build
+
       - name: Typecheck
         run: pnpm typecheck
 
       - name: Test
         run: pnpm test
 
-      - name: Build
-        run: pnpm build
+      - name: Sandbox runtime test
+        run: pnpm test:sandbox
 
       - name: Validate marketplace package
         run: pnpm validate:marketplace

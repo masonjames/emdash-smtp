@@ -1,6 +1,6 @@
 {
   "name": "emdash-smtp",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "description": "Trusted full-parity SMTP and transactional email plugin for EmDash",
   "type": "module",
   "main": "dist/index.mjs",
@@ -35,11 +35,11 @@
   ],
   "author": "Mason James",
   "dependencies": {
-    "emdash-smtp-core": "0.3.4",
-    "emdash-smtp-node-transports": "0.3.4"
+    "emdash-smtp-core": "0.4.0",
+    "emdash-smtp-node-transports": "0.4.0"
   },
   "peerDependencies": {
-    "emdash": ">=0.1.0"
+    "emdash": ">=1.0.1"
   },
   "license": "MIT",
   "publishConfig": {

@@ -1,43 +1,27 @@
-# `emdash-smtp-marketplace`
+# EmDash SMTP — sandbox distribution
 
-Marketplace-safe EmDash SMTP plugin package.
+Requires EmDash 1.0.1 or newer and a configured sandbox runner.
 
-This package is designed for `emdash plugin bundle` / `emdash plugin publish` and for sandbox-compatible installs where delivery happens through HTTP API and OAuth-based providers. It publishes the same EmDash SMTP plugin identity (`emdash-smtp`) in standard/sandboxed form.
+Install **SMTP** by `@masonjames.com` from the [EmDash plugin registry](https://plugins.emdashcms.com). Open Plugins → SMTP Providers, save your provider credentials and default sender, then select SMTP as the email transport in EmDash email settings. Send a test email to verify your provider configuration. No frontend companion is required.
 
-## Includes
+The sandbox distribution supports HTTP API and OAuth providers. It cannot open arbitrary TCP sockets or run local sendmail. Use the public `emdash-smtp` npm package for generic SMTP servers and sendmail.
 
-- marketplace-safe standard plugin descriptor
-- sandbox entrypoint for EmDash marketplace bundles
-- Block Kit admin pages for provider settings and delivery logs
-- HTTP API and OAuth-capable provider coverage for the sandbox-safe EmDash SMTP package
+Choose one SMTP distribution per site. Registry installations have a separate publisher-scoped identity and do not import npm settings or delivery logs automatically.
 
-## Supported usage
+## Code-managed sandbox registration
 
-Use this package as the source package for EmDash marketplace bundling and publishing:
+The `emdashSmtpMarketplace()` factory remains available from this npm package. Register it in `sandboxed` with your site's sandbox runner. The npm plugin ID is `emdash-smtp`; do not activate a registry installation at the same time. This release's sandbox log collection uses the current valid name `delivery_logs` rather than the older `deliveryLogs`; old entries are retained but not imported.
 
-```bash
-pnpm validate:marketplace
-pnpm bundle:marketplace
+## Verification and publication
+
+From the workspace root:
+
+```sh
+pnpm release:check
+pnpm exec emdash-plugin login masonjames.com
 pnpm publish:marketplace
 ```
 
-That flow ultimately uses `emdash plugin publish --build` for `packages/emdash-smtp-marketplace` and bundles the package's TypeScript entrypoints into the marketplace artifact.
+The pinned plugin CLI builds a self-contained artifact, validates permissions, publishes its bundle and listing images to the publisher PDS, and writes immutable release records. Directory visibility follows registry approval.
 
-Direct `sandboxed: [emdashSmtpMarketplace()]` registration from this npm package is not the supported path right now; install through the EmDash marketplace or publish a bundled marketplace artifact with the CLI.
-
-## Limits of the sandbox variant
-
-The marketplace-safe package intentionally excludes trusted-only transports:
-
-- Generic SMTP
-- local sendmail / PHP mail analogue
-
-Use `emdash-smtp` instead when those transports are required.
-
-## Plugin ID
-
-The marketplace distribution uses the same EmDash plugin ID as the trusted package:
-
-- `emdash-smtp`
-
-Do not install both variants on the same site at the same time.
+The production sandbox test verifies provider setup, secret redaction, captured HTTP delivery, persistent logs, private admin access and Block Kit pages/widgets. Its use of the official test host is also demonstrated by [Charl Kruger's EmDash Forms](https://github.com/charl-kruger/emdash-forms).

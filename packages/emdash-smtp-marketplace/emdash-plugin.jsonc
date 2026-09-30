@@ -1,0 +1,111 @@
+{
+  "$schema": "../../node_modules/@emdash-cms/plugin-cli/schemas/emdash-plugin.schema.json",
+  "slug": "emdash-smtp",
+  "publisher": "did:plc:neov22wblqftd3653r6cl2gl",
+  "license": "MIT",
+  "author": {
+    "name": "Mason James",
+    "url": "https://masonjames.com/plugins/emdash-smtp/"
+  },
+  "security": {
+    "email": "hi@masonjames.com",
+    "url": "https://masonjames.com/.well-known/security.txt"
+  },
+  "name": "SMTP",
+  "description": "Transactional email providers, sender settings, fallback delivery and private delivery logs for EmDash.",
+  "keywords": [
+    "email",
+    "smtp",
+    "transactional",
+    "providers",
+    "emdash"
+  ],
+  "repo": "https://github.com/masonjames/emdash-smtp",
+  "release": {
+    "requires": {
+      "env:emdash": ">=1.0.1"
+    },
+    "artifacts": {
+      "icon": {
+        "file": "icon.png"
+      },
+      "screenshots": [
+        {
+          "file": "screenshots/providers-overview.png"
+        },
+        {
+          "file": "screenshots/marketplace-ready.png"
+        }
+      ]
+    }
+  },
+  "capabilities": [
+    "hooks.email-transport:register",
+    "network:request"
+  ],
+  "allowedHosts": [
+    "*.amazonaws.com",
+    "api.brevo.com",
+    "api.elasticemail.com",
+    "api.emailit.com",
+    "gmail.googleapis.com",
+    "oauth2.googleapis.com",
+    "mandrillapp.com",
+    "api.mailersend.com",
+    "api.mailgun.net",
+    "api.eu.mailgun.net",
+    "api.mailjet.com",
+    "graph.microsoft.com",
+    "login.microsoftonline.com",
+    "api.postmarkapp.com",
+    "api.resend.com",
+    "api.sendgrid.com",
+    "api.smtp2go.com",
+    "api.sparkpost.com",
+    "api.eu.sparkpost.com",
+    "mail.zoho.com",
+    "mail.zoho.eu",
+    "mail.zoho.in",
+    "mail.zoho.com.au",
+    "mail.zoho.jp",
+    "mail.zoho.sa",
+    "mail.zohocloud.ca",
+    "accounts.zoho.com"
+  ],
+  "storage": {
+    "delivery_logs": {
+      "indexes": [
+        "providerId",
+        "status",
+        "createdAt",
+        "source"
+      ]
+    }
+  },
+  "admin": {
+    "pages": [
+      {
+        "path": "/providers",
+        "label": "SMTP Providers",
+        "icon": "mail"
+      },
+      {
+        "path": "/logs",
+        "label": "SMTP Logs",
+        "icon": "activity"
+      }
+    ],
+    "widgets": [
+      {
+        "id": "smtp-overview",
+        "title": "SMTP",
+        "size": "third"
+      }
+    ]
+  },
+  "sections": {
+    "description": "Configure HTTP API and OAuth email providers, a primary and fallback provider, sender details and private delivery logs. Other plugins, including forms, send through EmDash\u2019s shared email pipeline.",
+    "installation": "Install SMTP from the EmDash plugin registry on EmDash 1.0.1 or newer with a sandbox runner configured. Open Plugins > SMTP Providers, configure a provider and default sender, then select SMTP as the email transport in EmDash email settings. Send a test email to confirm your provider configuration. No frontend companion is required.",
+    "faq": "Does the registry version support a custom SMTP server? No: sandboxed plugins cannot open TCP sockets or run sendmail. Install the public emdash-smtp npm package for those transports. Install one SMTP variant at a time. Existing npm settings are not automatically imported into a registry installation."
+  }
+}

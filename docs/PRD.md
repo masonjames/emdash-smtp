@@ -41,7 +41,7 @@ EmDash SMTP is a production-ready email delivery plugin family for EmDash split 
 - As a site owner, I can send a test email while saving provider settings.
 - As a site owner, I can define a primary provider and a fallback provider.
 - As a site owner, I can inspect recent delivery logs from the plugin admin page.
-- As a plugin maintainer, I can publish the marketplace-safe package with `emdash plugin publish`.
+- As a plugin maintainer, I can publish the marketplace-safe package with `emdash-plugin publish`.
 - As a first-party maintainer, I can install the trusted package from npm in `astro.config.mjs`.
 
 ## Functional requirements
@@ -71,7 +71,7 @@ EmDash SMTP is a production-ready email delivery plugin family for EmDash split 
 
 - Public unscoped package names
 - Trusted npm install documented with a working `astro.config.mjs` snippet
-- Marketplace publication documented through `emdash plugin publish`
+- Marketplace publication documented through `emdash-plugin publish`
 - Repository metadata and README files for both install targets
 - Marketplace icon asset
 - CI for build, typecheck, test, marketplace validation, and marketplace bundling
