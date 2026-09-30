@@ -28,15 +28,7 @@
     "artifacts": {
       "icon": {
         "file": "icon.png"
-      },
-      "screenshots": [
-        {
-          "file": "screenshots/providers-overview.png"
-        },
-        {
-          "file": "screenshots/marketplace-ready.png"
-        }
-      ]
+      }
     }
   },
   "capabilities": [
@@ -104,7 +96,7 @@
     ]
   },
   "sections": {
-    "description": "Configure HTTP API and OAuth email providers, a primary and fallback provider, sender details and private delivery logs. Other plugins, including forms, send through EmDash\u2019s shared email pipeline.",
+    "description": "An independent email transport plugin by Mason James. Configure HTTP API and OAuth email providers, a primary and fallback provider, sender details and private delivery logs. Other plugins send through EmDash\u2019s shared email pipeline. Generic TCP SMTP and local sendmail are available only in the separate native npm distribution.",
     "installation": "Install SMTP from the EmDash plugin registry on EmDash 1.0.1 or newer with a sandbox runner configured. Open Plugins > SMTP Providers, configure a provider and default sender, then select SMTP as the email transport in EmDash email settings. Send a test email to confirm your provider configuration. No frontend companion is required.",
     "faq": "Does the registry version support a custom SMTP server? No: sandboxed plugins cannot open TCP sockets or run sendmail. Install the public emdash-smtp npm package for those transports. Install one SMTP variant at a time. Existing npm settings are not automatically imported into a registry installation."
   }

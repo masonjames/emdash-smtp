@@ -64,7 +64,7 @@ pnpm bundle:marketplace
 pnpm publish:marketplace
 ```
 
-These commands use the pinned `@emdash-cms/plugin-cli` 0.13.1. Authenticate with `pnpm exec emdash-plugin login masonjames.com`. Direct publication uploads the bundle, icon and screenshots to the publisher’s PDS; public listing follows registry approval.
+These commands use the pinned `@emdash-cms/plugin-cli` 0.13.1. Authenticate with `pnpm exec emdash-plugin login masonjames.com`. Direct publication uploads the bundle and icon to the publisher’s PDS; public listing follows registry approval.
 
 ## Provider coverage
 

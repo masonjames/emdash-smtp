@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1
+
+- Remove obsolete gallery illustrations that showed retired package names and confused native SMTP transports with the registry distribution.
+- Clarify independent authorship and the registry distribution’s HTTP API/OAuth scope.
+- Preserve runtime behavior, storage and permissions.
+
 ## 0.4.0
 
 - Require EmDash 1.0.1 and use current email transport and network permissions.
